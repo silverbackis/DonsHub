@@ -23,5 +23,13 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\DataProvider\FootballDataProvider:
+        arguments:
+            $apiKey: '%env(FOOTBALL_API_KEY)%'
+
+    Abraham\TwitterOAuth\TwitterOAuth:
+        arguments:
+            - '%env(TWITTER_CONSUMER_KEY)%'
+            - '%env(TWITTER_CONSUMER_SECRET)%'
+            - '%env(TWITTER_ACCESS_TOKEN)%'
+            - '%env(TWITTER_ACCESS_TOKEN_SECRET)%'

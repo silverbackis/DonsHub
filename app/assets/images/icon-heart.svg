@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="11px" viewBox="0 0 12 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>hearts</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="footer" transform="translate(-143.000000, -164.000000)" fill="#E64C3C" fill-rule="nonzero">
+            <g id="Group-10">
+                <g id="hearts" transform="translate(143.000000, 164.000000)">
+                    <path d="M5.99451225,11 C9.24264057,8.74565649 10.8676366,6.68362286 11.6317803,5.11075998 C12.5245237,3.27302123 11.747955,0.994888872 9.8001134,0.230447126 C7.51058158,-0.667731944 5.99451225,1.40449691 5.99451225,1.40449691 C5.99451225,1.40449691 4.48921134,-0.673129415 2.1998866,0.225449468 C0.252045029,0.989891214 -0.524523744,3.26802357 0.368219718,5.10576232 C1.13236339,6.6784253 2.74638393,8.7458564 5.99451225,11 Z" id="Path"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

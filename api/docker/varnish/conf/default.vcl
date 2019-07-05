@@ -84,6 +84,12 @@ sub vcl_deliver {
   unset resp.http.url;
   # Comment the following line to send the "Cache-Tags" header to the client (e.g. to use CloudFlare cache tags)
   unset resp.http.Cache-Tags;
+
+  if (obj.hits > 0) {
+     set resp.http.X-Cache = "HIT";
+  } else {
+     set resp.http.X-Cache = "MISS";
+  }
 }
 
 sub vcl_backend_response {

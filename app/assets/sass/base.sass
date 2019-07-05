@@ -1,0 +1,70 @@
+@charset "utf-8"
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Monda&display=swap')
+@import './fonts'
+@import './utilities'
+
+@import "~bulma/sass/base/_all.sass"
+@import "~bulma/sass/grid/columns.sass"
+@import "~bulma/sass/grid/tiles.sass"
+@import "~bulma/sass/layout/hero.sass"
+@import "~bulma/sass/layout/section.sass"
+@import "~bulma/sass/elements/button.sass"
+@import "~bulma/sass/elements/container.sass"
+@import "~bulma/sass/elements/title.sass"
+@import "~bulma/sass/elements/box.sass"
+@import "~bulma/sass/components/level.sass"
+@import "~bulma/sass/components/tabs.sass"
+
+body,
+html,
+#__nuxt,
+#__layout
+  height: 100%
+
+.container
+  +touch
+    max-width: $tablet - 50px
+  +widescreen
+    max-width: $desktop - $container-offset
+
+.has-background-gold
+  background-color: $gold
+
+.has-text-gold
+  color: $gold
+
+.button.has-arrow:after
+  content: ''
+  position: absolute
+  border: 3px solid $gold
+  border-radius: 2px
+  border-right: 0
+  border-top: 0
+  display: block
+  height: 0.625em
+  pointer-events: none
+  top: 50%
+  transform: rotate(-135deg)
+  transform-origin: center
+  width: 0.625em
+  margin-top: -0.33em
+  right: 1.125em
+
+.flex-direction-column
+  flex-direction: column
+
+.white-page,
+.gold-page
+  @extend .flex-direction-column
+  height: 100%
+  > .column
+    z-index: 2
+    background: inherit
+
+.gold-page
+  background: $gold
+
+.white-page
+  background: $white

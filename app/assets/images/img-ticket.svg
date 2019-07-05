@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="260px" height="102px" viewBox="0 0 260 102" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M130,0 L257,0 L257,38.6341463 C253.293553,41.7035128 251.44033,44.8854886 251.44033,48.1800736 C251.44033,51.4746587 253.293553,54.9051435 257,58.4715281 L257,99 L130,99 L0,99 L0,58.4715281 C3.70644691,54.9051435 5.55967036,51.4746587 5.55967036,48.1800736 C5.55967036,44.8854886 3.70644691,41.7035128 0,38.6341463 L0,0 L130,0 Z" id="path-1"></path>
+        <filter x="-0.6%" y="-1.5%" width="102.3%" height="106.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="3" dy="3" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 0.781304538   0 0 0 0 0.172191232  0 0 0 1 0" type="matrix" in="shadowOffsetOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Mobile-Final-Designs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1---Home" transform="translate(-30.000000, -510.000000)">
+            <g id="Group-3" transform="translate(13.000000, 359.000000)">
+                <g id="Group-9" transform="translate(17.000000, 151.000000)">
+                    <g id="Combined-Shape">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#013DA2" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

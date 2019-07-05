@@ -31,7 +31,7 @@ class YoutubeCollectionDataProvider implements CollectionDataProviderInterface, 
 
         $queryParams = [
             'channelId' => 'UCYVQL8cG2bwoH9wx35if0Gw',
-            'maxResults' => 20,
+            'maxResults' => 10,
             'q' => 'fun',
             'type' => 'video'
         ];

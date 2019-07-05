@@ -97,6 +97,9 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "firebase/php-jwt": {
+        "version": "v5.0.0"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -108,6 +111,24 @@
         "files": [
             ".php_cs.dist"
         ]
+    },
+    "google/apiclient": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "49c5d7a66d863d28513979bf0666dc77599100c0"
+        },
+        "files": [
+            "config/packages/google_apiclient.yaml"
+        ]
+    },
+    "google/apiclient-services": {
+        "version": "v0.104"
+    },
+    "google/auth": {
+        "version": "v1.5.1"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
@@ -123,6 +144,9 @@
     },
     "league/html-to-markdown": {
         "version": "4.8.1"
+    },
+    "monolog/monolog": {
+        "version": "1.24.0"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -150,6 +174,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
+    },
+    "phpseclib/phpseclib": {
+        "version": "2.0.20"
     },
     "psr/cache": {
         "version": "1.0.1"

@@ -14,10 +14,8 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Traversable;
 
-class TweetCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface, SerializerAwareDataProviderInterface
+class TweetCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    use SerializerAwareDataProviderTrait;
-
     private $twitterOAuth;
     private $denormalizer;
 

@@ -11,7 +11,11 @@
           <app-link tag="li" :to="getRoute('/twitter')">
             <a>Twitter</a>
           </app-link>
-          <app-link tag="li" :to="getRoute('/youtube')">
+          <app-link
+            v-if="routePrefix === '/club-zone'"
+            tag="li"
+            :to="getRoute('/youtube')"
+          >
             <a>Youtube</a>
           </app-link>
           <app-link tag="li" :to="getRoute('/instagram')">

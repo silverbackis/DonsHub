@@ -27,49 +27,16 @@
 </template>
 
 <script>
-import ZonePrefixMixin from '~/components/ZonePrefixMixin'
-
-function getTweetData($axios) {
-  return $axios.$get('/club_zone_tweets')
-}
+import TwitterMixin from '~/components/TwitterMixin'
 
 export default {
-  mixins: [ZonePrefixMixin],
-  data() {
-    return {
-      pollInterval: null
-    }
-  },
-  computed: {
-    tweets() {
-      return this.tweetData['hydra:member']
-    }
-  },
-  async asyncData({ $axios }) {
-    return {
-      tweetData: await getTweetData($axios)
-    }
-  },
-  mounted() {
-    this.updateTweetData()
-  },
-  beforeDestroy() {
-    if (this.pollTimeout) {
-      clearTimeout(this.pollTimeout)
-    }
-  },
-  methods: {
-    twitterLink(id) {
-      return `https://twitter.com/Twitter/status/${id}?ref_src=twsrc%5Etfw`
-    },
-    async updateTweetData() {
-      this.tweetData = await getTweetData(this.$axios)
-      this.pollTimeout = setTimeout(this.updateTweetData, 5000)
-    }
-  }
+  mixins: [TwitterMixin('/club_zone_tweets')]
 }
 </script>
 
 <style lang="sass">
-@import "assets/sass/utilities"
+.twitter-tweet
+  height: 100%
+.env-bp-min
+  height: 100%
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <section class="gold-page columns is-gapless">
+  <section class="gold-page columns is-gapless home-page">
     <div class="column is-narrow">
       <hero>
         <h1 class="title">
@@ -38,4 +38,9 @@ export default {
 
 <style lang="sass">
 @import 'assets/sass/utilities'
+.home-page .hero.is-primary
+  padding-bottom: 3.5rem
+  .sw19
+    top: -6%
+    max-height: 97%
 </style>

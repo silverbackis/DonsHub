@@ -1,6 +1,11 @@
 <template>
   <zone-page :route-prefix="routePrefix">
     <h1 class="title">
+      <img
+        src="~assets/images/icon-clubzone.svg"
+        alt="Club Zone Icon"
+        class="icon"
+      />
       Club Zone
     </h1>
   </zone-page>

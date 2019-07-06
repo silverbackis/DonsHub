@@ -17,7 +17,6 @@
 @import 'assets/sass/utilities'
 .hero.is-primary
   position: relative
-  padding-bottom: 3.5rem
   overflow: visible
   z-index: 0
   .title
@@ -32,6 +31,13 @@
       margin-top: 0
       +mobile
         font-size: 1rem
+    .icon
+      vertical-align: middle
+      height: 66px
+      margin-right: .4em
+      +mobile
+        height: 40px
+
   .sw19
     user-select: none
     pointer-events: none
@@ -42,7 +48,9 @@
     max-width: 99%
     overflow: hidden
     backface-visibility: hidden
+    max-height: 180%
     +mobile
-      top: 2%
+      top: 45%
       max-height: 70%
+      transform: translate3d(-50%, -50%, 0)
 </style>

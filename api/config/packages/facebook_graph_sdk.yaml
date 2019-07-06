@@ -1,0 +1,8 @@
+services:
+    Facebook\Facebook:
+        class: Facebook\Facebook
+        arguments:
+            -   app_id: '%env(FACEBOOK_APP_ID)%'
+                app_secret: '%env(FACEBOOK_APP_SECRET)%'
+                default_graph_version: 'v3.2'
+                default_access_token: '%env(FACEBOOK_ACCESS_TOKEN)%'

@@ -35,11 +35,6 @@ export default {
 <style lang="sass">
 @import "assets/sass/utilities"
 .white-circle
-  background: $white
-  border-radius: 50%
-  width: 66px
-  height: 66px
-  overflow: hidden
   .icon
     margin-top: 5px
 </style>

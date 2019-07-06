@@ -37,7 +37,12 @@
       margin-right: .4em
       +mobile
         height: 40px
-
+    .white-circle
+      background: $white
+      border-radius: 50%
+      width: 66px
+      height: 66px
+      overflow: hidden
   .sw19
     user-select: none
     pointer-events: none

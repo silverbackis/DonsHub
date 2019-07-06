@@ -14,6 +14,7 @@
 @import "~bulma/sass/elements/container.sass"
 @import "~bulma/sass/elements/title.sass"
 @import "~bulma/sass/elements/box.sass"
+@import "~bulma/sass/elements/other.sass"
 @import "~bulma/sass/components/level.sass"
 @import "~bulma/sass/components/tabs.sass"
 
@@ -68,3 +69,20 @@ html,
 
 .white-page
   background: $white
+
+.fade-enter-active,
+.fade-leave-active
+  transition: opacity .3s
+
+.fade-enter,
+.fade-leave-to
+  opacity: 0
+
+.loader
+  &.is-medium
+    width: 2.5em
+    height: 2.5em
+  &.is-primary
+    border-color: $primary
+    border-right-color: transparent
+    border-top-color: transparent

@@ -27,11 +27,18 @@
           </div>
         </div>
         <div class="gate-countdown">
-          <p>gates open in</p>
-          <countdown
-            class="is-size-4 is-size-5-mobile"
-            :match-date-time="momentDate"
-          />
+          <template v-if="gatesOpen">
+            <p class="has-text-primary has-text-weight-bold is-size-4">
+              Match {{ match.matchStatus || 'Started' }}
+            </p>
+          </template>
+          <template v-else>
+            <p>gates open in</p>
+            <countdown
+              class="is-size-4 is-size-5-mobile"
+              :match-date-time="momentDate"
+            />
+          </template>
         </div>
       </div>
       <div class="column is-6">
@@ -79,6 +86,9 @@ export default {
     ...mapState({
       match: 'currentMatch'
     }),
+    gatesOpen() {
+      return moment.tz(new Date(), 'Europe/London').diff(this.momentDate) > 0
+    },
     momentDate() {
       return moment.tz(this.match.matchDateTime, 'Europe/London')
     },

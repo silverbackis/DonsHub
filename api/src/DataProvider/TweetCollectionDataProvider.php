@@ -42,7 +42,7 @@ class TweetCollectionDataProvider implements CollectionDataProviderInterface, Re
             'q' => $resourceClass === FanZoneTweet::class ?
                 '#COYD OR #AFCW OR #AFCWimbledon OR #DonsHub min_faves:2 +@AFCWimbledon' :
                 'from:AFCWimbledon',
-            'count' => 20
+            'count' => 10
         ]);
         $statuses = json_decode(json_encode($response->statuses), true);
         yield from $this->denormalizer->denormalize($statuses, $resourceClass . '[]');

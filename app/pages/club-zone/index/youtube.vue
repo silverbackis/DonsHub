@@ -1,15 +1,19 @@
 <template>
   <div class="section">
     <div class="container">
-      <div class="columns is-multiline is-centered">
+      <div class="columns is-multiline is-centered is-mobile">
+        <div v-if="!youtubeData" class="column is-narrow">
+          <div class="loader is-medium is-primary"></div>
+        </div>
         <div
           v-for="video in videos"
+          v-else
           :key="video.id"
-          class="column is-6 is-video"
+          class="column is-12-touch is-6-desktop is-video"
         >
-          <div>
+          <div class="video-holder">
             <img
-              src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 16 9" xml:space="preserve" height="9px" width="16px"></svg>'
+              :src="transparentSVG"
               alt="Video placeholder"
               class="video-placeholder"
             />
@@ -30,16 +34,20 @@ import ZonePrefixMixin from '~/components/ZonePrefixMixin'
 
 export default {
   mixins: [ZonePrefixMixin],
-  computed: {
-    videos() {
-      return this.youtubeData['hydra:member']
+  data() {
+    return {
+      youtubeData: null,
+      transparentSVG:
+        'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 16 9" xml:space="preserve" height="9px" width="16px"></svg>'
     }
   },
-  async asyncData({ $axios }) {
-    const youtubeData = await $axios.$get('/youtube_videos')
-    return {
-      youtubeData
+  computed: {
+    videos() {
+      return this.youtubeData ? this.youtubeData['hydra:member'] : []
     }
+  },
+  async mounted() {
+    this.youtubeData = await this.$axios.$get('/youtube_videos')
   },
   methods: {
     videoSrc(id) {
@@ -50,12 +58,14 @@ export default {
 </script>
 
 <style lang="sass">
+@import "assets/sass/utilities"
 .is-video
   position: relative
-  > div
+  .video-holder
     position: relative
     display: block
     height: 100%
+    background: $grey-lighter
     .video-placeholder
       width: 100%
       ~ iframe

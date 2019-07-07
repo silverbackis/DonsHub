@@ -28,6 +28,7 @@ RUN set -eux; \
 		libzip-dev \
 		postgresql-dev \
 		zlib-dev \
+		rabbitmq-c-dev \
 	; \
 	\
 	docker-php-ext-configure zip --with-libzip; \
@@ -38,11 +39,13 @@ RUN set -eux; \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
+		amqp \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+		amqp \
 	; \
 	\
 	runDeps="$( \

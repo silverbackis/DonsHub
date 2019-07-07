@@ -6,7 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\MatchesCurrentController;
 use DateTime;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,6 +29,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Match
 {
+    private $gatesOpenTimeMinutesBefore = 60;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -102,6 +104,11 @@ class Match
      */
     private $matchId;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\MatchLeague", mappedBy="match", cascade={"persist", "remove"})
+     */
+    private $matchLeague;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,7 +162,7 @@ class Match
         return $this;
     }
 
-    public function getMatchDateTime(): ?DateTimeInterface
+    public function getMatchDateTime(): ?DateTime
     {
         return $this->matchDateTime;
     }
@@ -259,6 +266,34 @@ class Match
     public function setMatchId(int $matchId): self
     {
         $this->matchId = $matchId;
+
+        return $this;
+    }
+
+    public function isGatesOpen(): bool
+    {
+        return true;
+        if (!$gatesOpenTime = $this->getMatchDateTime()) {
+            return false;
+        }
+        $gatesOpenTime->modify('-' . $this->gatesOpenTimeMinutesBefore . ' minutes');
+        $now = new DateTimeImmutable('now');
+        return $now->getTimestamp()-$gatesOpenTime->getTimestamp() > 0;
+    }
+
+    public function getMatchLeague(): ?MatchLeague
+    {
+        return $this->matchLeague;
+    }
+
+    public function setMatchLeague(MatchLeague $matchLeague): self
+    {
+        $this->matchLeague = $matchLeague;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $matchLeague->getMatch()) {
+            $matchLeague->setMatch($this);
+        }
 
         return $this;
     }

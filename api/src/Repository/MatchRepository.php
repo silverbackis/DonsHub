@@ -19,7 +19,7 @@ class MatchRepository extends ServiceEntityRepository
         parent::__construct($registry, Match::class);
     }
 
-    public function findCurrent()
+    public function findCurrent(): ?Match
     {
         $qb = $this->createQueryBuilder('m');
         return $qb

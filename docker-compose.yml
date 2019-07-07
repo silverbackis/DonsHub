@@ -119,5 +119,14 @@ services:
       - "8443:8443"
       - "8444:8444"
 
+  rabbitmq:
+    build:
+      context: ./rabbitmq
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq:cached
+    ports:
+      - 15672:15672
+
 volumes:
   db-data: {}
+  rabbitmq: {}

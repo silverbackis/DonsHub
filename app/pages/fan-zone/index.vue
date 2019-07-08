@@ -1,13 +1,11 @@
 <template>
   <zone-page :route-prefix="routePrefix">
     <h1 class="title">
-      <div class="is-inline-block white-circle icon">
-        <img
-          src="~assets/images/icon-fanzone.svg"
-          alt="Club Zone Icon"
-          class="icon"
-        />
-      </div>
+      <img
+        src="~assets/images/hero/fan-zone.svg"
+        alt="Club Zone Icon"
+        class="icon"
+      />
       Fan Zone
     </h1>
   </zone-page>
@@ -34,10 +32,3 @@ export default {
   }
 }
 </script>
-
-<style lang="sass">
-@import "assets/sass/utilities"
-.white-circle
-  .icon
-    margin-top: 5px
-</style>

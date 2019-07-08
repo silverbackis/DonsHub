@@ -3,13 +3,11 @@
     <div class="column is-narrow">
       <hero>
         <h1 class="title">
-          <div class="is-inline-block white-circle icon">
-            <img
-              src="~assets/images/icon-donation.svg"
-              alt="Donate Icon"
-              class="icon"
-            />
-          </div>
+          <img
+            src="~assets/images/hero/contact.svg"
+            alt="Donate Icon"
+            class="icon"
+          />
           Contact
         </h1>
       </hero>

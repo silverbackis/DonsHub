@@ -3,13 +3,11 @@
     <div class="column is-narrow">
       <hero>
         <h1 class="title">
-          <div class="is-inline-block white-circle icon">
-            <img
-              src="~assets/images/icon-donation.svg"
-              alt="Donate Icon"
-              class="icon"
-            />
-          </div>
+          <img
+            src="~assets/images/hero/about-us.svg"
+            alt="Donate Icon"
+            class="icon"
+          />
           About
         </h1>
       </hero>
@@ -31,6 +29,13 @@
               maximus dolor a lectus tempor bibendum. Cras mollis rhoncus
               vulputate. Proin mi leo, auctor et justo vel, dictum tempus justo.
             </p>
+            <div class="has-text-centered">
+              <img
+                src="~assets/images/iploughlane.svg"
+                alt="iPloughLane Road Sign - Made to look like Plough Lane real road sign"
+                class="iploughlane-road-sign"
+              />
+            </div>
             <p>
               Quisque turpis libero, placerat et luctus sit amet, faucibus ut
               tellus. Aliquam erat volutpat. Vestibulum suscipit ligula vitae
@@ -63,3 +68,11 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+.iploughlane-road-sign
+  display: inline-block
+  width: 250px
+  max-width: 100%
+  margin: 2rem 0
+</style>

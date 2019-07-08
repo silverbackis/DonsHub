@@ -8,6 +8,7 @@ use App\Controller\MatchesCurrentController;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ApiResource(
@@ -313,7 +314,7 @@ class Match
             return null;
         }
         $now = new DateTimeImmutable('now');
-        return max(0, ceil(($now->getTimestamp() - $gatesOpenTime->getTimestamp()) / 1000));
+        return max(0, ceil(($gatesOpenTime->getTimestamp() - $now->getTimestamp()) / 1000));
     }
 
     public function isGatesOpen(): bool
@@ -345,6 +346,7 @@ class Match
     public function isMatchSame(Match $match): bool
     {
         return (
+            $this->getMatchId() === $match->getMatchId() &&
             $this->getCountryId() === $match->getCountryId() &&
             $this->getLeagueId() === $match->getLeagueId() &&
             $this->getMatchAwayTeamId() === $match->getMatchAwayTeamId() &&
@@ -357,6 +359,7 @@ class Match
         $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
         $this->setMatchHomeTeamScore($match->getMatchHomeTeamScore());
         $this->setMatchStatus($match->getMatchStatus());
+        $this->setMatchDateTime($match->getMatchDateTime());
         return $this;
     }
 }

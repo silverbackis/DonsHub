@@ -33,11 +33,7 @@
             </p>
           </template>
           <template v-else>
-            <p>gates open in</p>
-            <countdown
-              class="is-size-4 is-size-5-mobile"
-              :match-date-time="momentDate"
-            />
+            <countdown />
           </template>
         </div>
       </div>
@@ -62,10 +58,15 @@
         </div>
         <div>
           <nuxt-link
-            class="button is-primary is-fullwidth is-rounded is-medium has-arrow"
+            class="button is-fullwidth is-rounded is-medium"
+            :class="[
+              gatesOpen ? 'is-primary' : 'is-light',
+              { 'has-arrow': gatesOpen }
+            ]"
+            :disabled="!gatesOpen"
             to="/iploughlane"
           >
-            Enter Stadium
+            {{ gatesOpen ? 'Enter Stadium' : 'Gates Closed' }}
           </nuxt-link>
         </div>
       </div>
@@ -74,8 +75,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import moment from 'moment-timezone'
+import { mapState, mapGetters } from 'vuex'
 import Countdown from './Countdown'
 
 export default {
@@ -86,15 +86,12 @@ export default {
     ...mapState({
       match: 'currentMatch'
     }),
-    gatesOpen() {
-      return moment.tz(new Date(), 'Europe/London').diff(this.momentDate) > 0
-    },
-    momentDate() {
-      return moment.tz(this.match.matchDateTime, 'Europe/London')
-    },
-    displayDate() {
-      return this.momentDate.format('Do MMM Y @ HH:mm')
-    }
+    ...mapGetters({
+      gatesOpen: 'gatesOpen',
+      momentDate: 'matchDateTime',
+      displayDate: 'matchDisplayDateTime',
+      gatesMoment: 'gatesDateTime'
+    })
   }
 }
 </script>

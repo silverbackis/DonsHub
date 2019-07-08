@@ -8,7 +8,7 @@
     </div>
     <div class="column is-narrow">
       <div class="footer">
-        <div class="content top section">
+        <div class="top section">
           <div class="container">
             <nav class="columns is-gapless">
               <ul class="column is-3">

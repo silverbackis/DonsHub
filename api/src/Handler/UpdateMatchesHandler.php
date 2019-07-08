@@ -37,7 +37,6 @@ class UpdateMatchesHandler implements MessageHandlerInterface
     private $teamRepository;
     private $serializer;
     private $apiTimeZone;
-    private $utcTimeZone;
     private $messageBus;
 
     private static $dateFormat = 'Y-m-d';
@@ -62,7 +61,6 @@ class UpdateMatchesHandler implements MessageHandlerInterface
         $normalizers = [new ObjectNormalizer()];
         $this->serializer = new Serializer($normalizers, $encoders);
         $this->apiTimeZone = new DateTimeZone('Europe/Berlin');
-        $this->utcTimeZone = new DateTimeZone('Europe/London');
     }
 
     /**
@@ -200,7 +198,6 @@ class UpdateMatchesHandler implements MessageHandlerInterface
     {
         foreach ($matchesArray as $matchData) {
             $matchDateTime = new DateTime($matchData['match_date'] . ' ' . $matchData['match_time'] . ':00', $this->apiTimeZone);
-            $matchDateTime->setTimezone($this->utcTimeZone);
             $matchData['match_date_time'] = $matchDateTime;
 
             /** @var Match $match */

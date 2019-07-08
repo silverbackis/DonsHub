@@ -13,9 +13,15 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	fi
 	ln -sf "$PHP_INI_RECOMMENDED" "$PHP_INI_DIR/php.ini"
 
-	mkdir -p var/cache var/log
+	mkdir -p var/cache var/log config/jwt
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
+
+	# Generate keys for JWT
+	if [ ! -f $JWT_SECRET_KEY ]; then
+    openssl genrsa -out $JWT_SECRET_KEY -aes256 -passout pass:$JWT_PASSPHRASE 4096
+    openssl rsa -passin pass:$JWT_PASSPHRASE -pubout -in $JWT_SECRET_KEY -out $JWT_PUBLIC_KEY
+  fi
 
 	if [ "$APP_ENV" != 'prod' ]; then
 		composer install --prefer-dist --no-progress --no-suggest --no-interaction
@@ -26,11 +32,12 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		sleep 1
 	done
 
-	bin/console app:matches:update
-
 	if [ "$APP_ENV" != 'prod' ]; then
 		bin/console doctrine:schema:update --force --no-interaction
 	fi
+
+	bin/console app:matches:update || EXIT_CODE=$? && true
+  echo ${EXIT_CODE}
 fi
 
 exec docker-php-entrypoint "$@"

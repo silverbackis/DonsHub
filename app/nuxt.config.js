@@ -75,5 +75,9 @@ module.exports = {
   env: {
     baseUrl: process.env.API_URL_BROWSER || 'http://localhost:8080',
     mercureUrl: 'http://localhost:1337'
-  }
+  },
+  serverMiddleware: [
+    // API middleware
+    '~/server/index.js'
+  ]
 }

@@ -184,3 +184,11 @@ COPY --from=api_platform_php /srv/api/public public/
 FROM cooptilleuls/varnish:${VARNISH_VERSION}-alpine AS api_platform_varnish
 
 COPY docker/varnish/conf/default.vcl /usr/local/etc/varnish/default.vcl
+
+FROM library/postgres:9.6-alpine
+
+COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/
+
+RUN chmod +x /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+
+EXPOSE 5432

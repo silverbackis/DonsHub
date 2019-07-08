@@ -53,6 +53,7 @@ class MatchesUpdateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+        $io->comment('Updating...');
         $message = new UpdateMatchMessage();
         file_put_contents(UpdateMatchesHandler::$PIDFile, $message->getId());
         $this->matchesHandler->__invoke($message);

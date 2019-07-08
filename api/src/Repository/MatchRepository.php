@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DataProvider\FootballDataProvider;
 use App\Entity\Match;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -23,7 +24,14 @@ class MatchRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
         return $qb
+            ->andWhere(
+                $qb->expr()->orX(
+                    'm.matchHomeTeamId = :team_id',
+                    'm.matchAwayTeamId = :team_id'
+                )
+            )
             ->andWhere('m.matchDateTime >= CURRENT_DATE()')
+            ->setParameter('team_id', FootballDataProvider::$teamId)
             ->orderBy('m.matchDateTime', 'ASC')
             ->setMaxResults(1)
             ->getQuery()

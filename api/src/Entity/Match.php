@@ -19,13 +19,14 @@ use Doctrine\ORM\Mapping as ORM;
  *             "path"="/matches/current",
  *             "controller"=MatchesCurrentController::class,
  *             "pagination_enabled"=false,
- *             "http_cache"={ "max_age"=0 },
+ *             "http_cache"={ "max_age"=0, "shared_max_age"=0 },
  *             "defaults"={"_api_receive"=false}
  *          },
  *          "GET"
  *     }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\MatchRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Match
 {
@@ -108,6 +109,33 @@ class Match
      * @ORM\OneToOne(targetEntity="App\Entity\MatchLeague", mappedBy="match", cascade={"persist", "remove"})
      */
     private $matchLeague;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist(): void
+    {
+        $this->created = new DateTime();
+        $this->updated = new DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate(): void
+    {
+        $this->updated = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -241,7 +269,7 @@ class Match
 
     public function setMatchHomeTeamScore($matchHomeTeamScore): self
     {
-        $this->matchHomeTeamScore = (int)$matchHomeTeamScore;
+        $this->matchHomeTeamScore = (int) $matchHomeTeamScore;
 
         return $this;
     }
@@ -253,7 +281,7 @@ class Match
 
     public function setMatchAwayTeamScore($matchAwayTeamScore): self
     {
-        $this->matchAwayTeamScore = (int)$matchAwayTeamScore;
+        $this->matchAwayTeamScore = (int) $matchAwayTeamScore;
 
         return $this;
     }
@@ -270,15 +298,31 @@ class Match
         return $this;
     }
 
-    public function isGatesOpen(): bool
+    public function getGatesOpen(): ?DateTime
     {
-        return true;
         if (!$gatesOpenTime = $this->getMatchDateTime()) {
-            return false;
+            return null;
         }
         $gatesOpenTime->modify('-' . $this->gatesOpenTimeMinutesBefore . ' minutes');
+        return $gatesOpenTime;
+    }
+
+    public function getSecondsUntilGatesOpen(): int
+    {
+        if (!($gatesOpenTime = $this->getGatesOpen())) {
+            return null;
+        }
         $now = new DateTimeImmutable('now');
-        return $now->getTimestamp()-$gatesOpenTime->getTimestamp() > 0;
+        return max(0, ceil(($now->getTimestamp() - $gatesOpenTime->getTimestamp()) / 1000));
+    }
+
+    public function isGatesOpen(): bool
+    {
+        $secondsUntilOpen = $this->getSecondsUntilGatesOpen();
+        if (!$secondsUntilOpen) {
+            return false;
+        }
+        return $secondsUntilOpen === 0;
     }
 
     public function getMatchLeague(): ?MatchLeague
@@ -295,6 +339,24 @@ class Match
             $matchLeague->setMatch($this);
         }
 
+        return $this;
+    }
+
+    public function isMatchSame(Match $match): bool
+    {
+        return (
+            $this->getCountryId() === $match->getCountryId() &&
+            $this->getLeagueId() === $match->getLeagueId() &&
+            $this->getMatchAwayTeamId() === $match->getMatchAwayTeamId() &&
+            $this->getMatchHomeTeamId() === $match->getMatchHomeTeamId()
+        );
+    }
+
+    public function updateFromMatch(Match $match): self
+    {
+        $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
+        $this->setMatchHomeTeamScore($match->getMatchHomeTeamScore());
+        $this->setMatchStatus($match->getMatchStatus());
         return $this;
     }
 }

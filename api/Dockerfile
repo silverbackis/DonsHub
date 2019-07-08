@@ -105,6 +105,68 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
+# "php-consume" stage
+# depends on the "php" stage above
+FROM php:${PHP_VERSION}-fpm-alpine AS api_platform_php_consume
+
+# persistent / runtime deps
+RUN apk add --no-cache \
+		acl \
+		file \
+		gettext \
+		git \
+	;
+
+ARG APCU_VERSION=5.1.17
+RUN set -eux; \
+	apk add --no-cache --virtual .build-deps \
+		$PHPIZE_DEPS \
+		icu-dev \
+		libzip-dev \
+		postgresql-dev \
+		zlib-dev \
+		rabbitmq-c-dev \
+	; \
+	\
+	docker-php-ext-configure zip --with-libzip; \
+	docker-php-ext-install -j$(nproc) \
+		intl \
+		pdo_pgsql \
+		zip \
+	; \
+	pecl install \
+		apcu-${APCU_VERSION} \
+		amqp \
+	; \
+	pecl clear-cache; \
+	docker-php-ext-enable \
+		apcu \
+		opcache \
+		amqp \
+	; \
+	\
+	runDeps="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	)"; \
+	apk add --no-cache --virtual .api-phpexts-rundeps $runDeps; \
+	\
+	apk del .build-deps
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+COPY docker/php/conf.d/api-platform.ini $PHP_INI_DIR/conf.d/api-platform.ini
+
+COPY --from=api_platform_php /srv/api/ /
+
+WORKDIR /srv/api
+
+COPY docker/php-consume/entrypoint.sh /usr/local/bin/entrypoint
+RUN chmod +x /usr/local/bin/entrypoint
+
+ENTRYPOINT ["entrypoint"]
 
 # "nginx" stage
 # depends on the "php" stage above

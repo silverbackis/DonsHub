@@ -6,7 +6,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     mercure="true",
+ *     itemOperations={ "GET" },
+ *     collectionOperations={ "GET" }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\MatchLeagueTeamRepository")
  */
 class MatchLeagueTeam

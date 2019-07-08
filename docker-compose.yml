@@ -16,8 +16,10 @@ services:
       <<: *cache
     depends_on:
       - db
+      - rabbitmq
     # Comment out these volumes in production
     volumes:
+      - php-pid:/tmp/PID:rw,cached
       - ./api:/srv/api:rw,cached
       # If you develop on Linux, uncomment the following line to use a bind-mounted host directory instead
       # - ./api/var:/srv/api/var:rw
@@ -127,6 +129,22 @@ services:
     ports:
       - 15672:15672
 
+  php-consume:
+    build:
+      context: ./api
+      target: api_platform_php_consume
+    depends_on:
+      - db
+      - php
+      - rabbitmq
+    # Comment out these volumes in production
+    volumes:
+      - php-pid:/tmp/PID:ro,cached
+      - ./api:/srv/api:rw,cached
+      # If you develop on Linux, uncomment the following line to use a bind-mounted host directory instead
+      # - ./api/var:/srv/api/var:rw
+
 volumes:
   db-data: {}
   rabbitmq: {}
+  php-pid: {}

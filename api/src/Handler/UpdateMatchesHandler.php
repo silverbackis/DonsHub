@@ -7,6 +7,7 @@ use App\Entity\Match;
 use App\Entity\MatchLeague;
 use App\Entity\MatchLeagueTeam;
 use App\Exception\FootballApiException;
+use App\Exception\UpdateMatchesException;
 use App\Message\UpdateMatchMessage;
 use App\Repository\MatchLeagueRepository;
 use App\Repository\MatchLeagueTeamRepository;
@@ -40,6 +41,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
     private $messageBus;
 
     private static $dateFormat = 'Y-m-d';
+    public static $PIDFile = '/tmp/PID/UMM';
 
     public function __construct(
         FootballDataProvider $dataProvider,
@@ -112,6 +114,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
             $this->fetchRelatedLeague($currentMatch);
             return;
         }
+
         $response = $this->dataProvider->request('get_standings', [
             'league_id' => $currentMatch->getLeagueId()
         ]);
@@ -119,7 +122,12 @@ class UpdateMatchesHandler implements MessageHandlerInterface
             // may be a friendly...
             return;
         }
-        $responseArray = $this->getResponseArray($response);
+        try {
+            $responseArray = $this->getResponseArray($response);
+        } catch (FootballApiException $e) {
+            // may be a friendly...
+            return;
+        }
         foreach ($responseArray as $leagueTeamData) {
             /** @var MatchLeagueTeam $team */
             $team = $this->serializer->denormalize($leagueTeamData, MatchLeagueTeam::class, 'json');
@@ -177,7 +185,11 @@ class UpdateMatchesHandler implements MessageHandlerInterface
         }
         $content = $response->getContent();
 
-        return json_decode($content, true);
+        $contentArray = json_decode($content, true);
+        if (array_key_exists('error', $contentArray)) {
+            throw new FootballApiException(sprintf('%s: %s', $contentArray['error'], $contentArray['message']));
+        }
+        return $contentArray;
     }
 
     /**
@@ -198,15 +210,30 @@ class UpdateMatchesHandler implements MessageHandlerInterface
                     'matchId' => $match->getMatchId()
                 ]
             );
-            if ($existingMatch === $match) {
-                return;
-            }
-            if ($existingMatch) {
-                $this->entityManager->remove($existingMatch);
+            if ($existingMatch && $existingMatch->isMatchSame($match)) {
+                $existingMatch->updateFromMatch($match);
+                continue;
             }
             $this->entityManager->persist($match);
         }
         $this->entityManager->flush();
+    }
+
+    // The message we are looping with should have the same timestamp as the one that was started initially
+    // This will ensure we do not have multiple processes running and an increase in API calls
+    // When the command is called to create the first message, it will update the PID with a new timestamp
+    // We validate the message we receive in the handler is the latest looping message
+    /**
+     * @param UpdateMatchMessage $message
+     * @throws UpdateMatchesException
+     */
+    private function validateMessage(UpdateMatchMessage $message): void
+    {
+        $PID = file_get_contents(self::$PIDFile);
+        $messageTimestamp = $message->getId();
+        if ($PID !== $messageTimestamp) {
+            throw new UpdateMatchesException(sprintf('Message received is not valid. (%s !== %s)', $PID, $messageTimestamp));
+        }
     }
 
     /**
@@ -217,28 +244,43 @@ class UpdateMatchesHandler implements MessageHandlerInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws UpdateMatchesException
      */
     public function __invoke(UpdateMatchMessage $message)
     {
-        $refreshDuration = 20;
+        $this->validateMessage($message);
+
+        if (($sleepSeconds = $message->getSleepSeconds()) > 0) {
+            sleep($sleepSeconds);
+        }
+
+        // Start stopwatch
         $stopwatch = new Stopwatch();
         $stopwatch->start('footballApiRequest');
 
         $currentMatch = $this->matchRepository->findCurrent();
-        $isMatchOngoing = $currentMatch && $currentMatch->isGatesOpen() && $currentMatch->getMatchDateTime();
-        if ($isMatchOngoing) {
+        $minimumRefreshTime = 20; // 20 seconds to prevent exceeding limits of 1 per 20 seconds to each endpoint
+        if ($currentMatch && $currentMatch->isGatesOpen()) {
+            $refreshDuration = $minimumRefreshTime;
             $this->fetchRelatedMatches($currentMatch);
         } else {
+            $refreshDuration = 60 * 15;
+            if ($currentMatch) {
+                $gatesOpenSeconds = $currentMatch->getSecondsUntilGatesOpen();
+                if ($gatesOpenSeconds < $refreshDuration) {
+                    $refreshDuration = max($gatesOpenSeconds, $minimumRefreshTime);
+                }
+            }
             $this->fetchMatchFixtures();
         }
 
+        // We have got the data and are allowed 1 request every 20 seconds
+        // Stop the stopwatch and to not dispatch another message until 20 seconds has passed
         $event = $stopwatch->stop('footballApiRequest');
         $ms = $event->getDuration();
         $seconds = ceil($ms/1000);
         $sleepTime = $refreshDuration-$seconds;
-        if ($sleepTime > 0) {
-            sleep($sleepTime);
-        }
+        $message->setSleepSeconds($sleepTime);
         $this->messageBus->dispatch($message);
     }
 }

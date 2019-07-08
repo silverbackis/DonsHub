@@ -8,7 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     mercure="true",
+ *     itemOperations={ "GET" },
+ *     collectionOperations={ "GET" }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\MatchLeagueRepository")
  */
 class MatchLeague

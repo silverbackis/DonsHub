@@ -31,7 +31,7 @@ export default {
   },
   data: () => ({}),
   head: {
-    title: 'Dons Hub'
+    titleTemplate: 'Dons Hub'
   }
 }
 </script>

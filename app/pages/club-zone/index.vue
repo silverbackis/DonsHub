@@ -26,6 +26,9 @@ export default {
     return {
       routePrefix
     }
+  },
+  head: {
+    titleTemplate: '%s - Club Zone - Dons Hub'
   }
 }
 </script>

@@ -53,6 +53,9 @@ export default {
     videoSrc(id) {
       return 'https://www.youtube.com/embed/' + id
     }
+  },
+  head: {
+    title: 'YouTube'
   }
 }
 </script>

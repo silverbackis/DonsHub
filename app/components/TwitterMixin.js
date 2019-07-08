@@ -39,6 +39,9 @@ export default function(endpoint) {
         this.tweetData = await getTweetData(this.$axios, this.endpoint)
         this.pollTimeout = setTimeout(this.updateTweetData, 5000)
       }
+    },
+    head: {
+      title: 'Twitter'
     }
   }
 

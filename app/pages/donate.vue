@@ -72,6 +72,9 @@ export default {
   components: {
     AppLink,
     Hero
+  },
+  head: {
+    title: 'Donate'
   }
 }
 </script>

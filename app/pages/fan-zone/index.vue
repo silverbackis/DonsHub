@@ -28,6 +28,9 @@ export default {
     return {
       routePrefix
     }
+  },
+  head: {
+    titleTemplate: '%s - Fan Zone - Dons Hub'
   }
 }
 </script>

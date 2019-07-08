@@ -44,6 +44,9 @@ import Hero from '~/components/Hero'
 export default {
   components: {
     Hero
+  },
+  head: {
+    title: 'Contact'
   }
 }
 </script>

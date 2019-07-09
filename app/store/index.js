@@ -3,8 +3,10 @@ import moment from 'moment-timezone'
 export default {
   state: () => ({
     baseUrl: null,
-    mercureUrl: null,
+    mercureHub: null,
     currentMatch: null,
+    sessionId: null,
+    clubTeamId: 2664,
     avatars: {
       femaleBluetop: {
         image: 'female-bluetop.png',
@@ -65,11 +67,11 @@ export default {
     }
   }),
   getters: {
-    matchDateTime(state) {
-      return moment.utc(state.currentMatch.matchDateTime)
+    matchDateTime(state, getters) {
+      return moment.utc(getters.currentMatch.matchDateTime)
     },
-    gatesDateTime(state) {
-      return moment.utc(state.currentMatch.gatesOpen)
+    gatesDateTime(state, getters) {
+      return moment.utc(getters.currentMatch.gatesOpen)
     },
     matchDisplayDateTime(state, getters) {
       return getters.matchDateTime
@@ -78,26 +80,47 @@ export default {
     },
     gatesOpen(state, getters) {
       return moment.utc().diff(getters.gatesDateTime) > 0
+    },
+    currentMatch(state, getters, rootState, rootGetters) {
+      return rootGetters['bwstarter/_entities/getEntity'](state.currentMatch)
     }
   },
   mutations: {
     setBaseUrl(state, baseUrl) {
       state.baseUrl = baseUrl
     },
-    setMercureUrl(state, mercureUrl) {
-      state.mercureUrl = mercureUrl
+    setMercureHub(state, mercureHub) {
+      state.mercureHub = mercureHub
     },
     setCurrentMatch(state, currentMatch) {
       state.currentMatch = currentMatch
+    },
+    setSessionId(state, id) {
+      state.sessionId = id
+    },
+    setToken(state, token) {
+      state.token = token
     }
   },
   actions: {
-    async nuxtServerInit({ commit }, { env, $axios }) {
+    async nuxtServerInit({ commit }, { env, $axios, req }) {
+      commit('setSessionId', req.sessionID)
       commit('setBaseUrl', env.baseUrl)
-      commit('setMercureUrl', env.mercureUrl)
       try {
-        const { data: currentMatch } = await $axios.get('/matches/current')
-        commit('setCurrentMatch', currentMatch)
+        const { data: currentMatch, headers } = await $axios.get(
+          '/matches/current'
+        )
+        commit('bwstarter/_entities/setEntity', {
+          id: currentMatch['@id'],
+          data: currentMatch
+        })
+        commit('setCurrentMatch', currentMatch['@id'])
+        commit(
+          'setMercureHub',
+          headers.link.match(
+            /<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/
+          )[1]
+        )
       } catch (err) {}
     }
   }

@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Controller\MatchesCurrentController;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ApiResource(
@@ -24,8 +25,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *             "defaults"={"_api_receive"=false}
  *          },
  *          "GET"
- *     }
+ *     },
+ *     attributes={"pagination_items_per_page"=200, "order"={"matchHomeTeamName": "ASC"}}
  * )
+ * @ApiFilter(DateFilter::class, properties={"matchDateTime"})
  * @ORM\Entity(repositoryClass="App\Repository\MatchRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -191,7 +194,7 @@ class Match
         return $this;
     }
 
-    public function getMatchDateTime(): ?DateTime
+    public function getMatchDateTime(): DateTime
     {
         return $this->matchDateTime;
     }
@@ -203,9 +206,9 @@ class Match
         return $this;
     }
 
-    public function getMatchStatus(): ?string
+    public function getMatchStatus(): string
     {
-        return $this->matchStatus;
+        return (string) $this->matchStatus;
     }
 
     public function setMatchStatus(?string $matchStatus): self
@@ -320,7 +323,7 @@ class Match
     public function isGatesOpen(): bool
     {
         $secondsUntilOpen = $this->getSecondsUntilGatesOpen();
-        if (!$secondsUntilOpen) {
+        if ($secondsUntilOpen === null) {
             return false;
         }
         return $secondsUntilOpen === 0;
@@ -356,10 +359,14 @@ class Match
 
     public function updateFromMatch(Match $match): self
     {
-        $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
         $this->setMatchHomeTeamScore($match->getMatchHomeTeamScore());
+        $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
         $this->setMatchStatus($match->getMatchStatus());
-        $this->setMatchDateTime($match->getMatchDateTime());
+        $thisDT = $this->getMatchDateTime();
+        $compareDT = $match->getMatchDateTime();
+        if ($thisDT != $compareDT) {
+            $this->setMatchDateTime($match->getMatchDateTime());
+        }
         return $this;
     }
 }

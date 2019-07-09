@@ -33,6 +33,16 @@ class MatchLeagueTeam
     private $overallLeaguePosition;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $gamesPlayed;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $goalDifference;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\MatchLeague", inversedBy="matchLeagueTeams")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -63,6 +73,30 @@ class MatchLeagueTeam
     public function setOverallLeaguePosition(int $overallLeaguePosition): self
     {
         $this->overallLeaguePosition = $overallLeaguePosition;
+
+        return $this;
+    }
+
+    public function getGamesPlayed(): int
+    {
+        return $this->gamesPlayed;
+    }
+
+    public function setGamesPlayed(int $gamesPlayed): self
+    {
+        $this->gamesPlayed = $gamesPlayed;
+
+        return $this;
+    }
+
+    public function getGoalDifference(): int
+    {
+        return $this->goalDifference;
+    }
+
+    public function setGoalDifference(int $goalDifference): self
+    {
+        $this->goalDifference = $goalDifference;
 
         return $this;
     }

@@ -1,5 +1,8 @@
 <template>
-  <section class="section has-background-gold has-text-centered-desktop">
+  <section
+    v-if="match"
+    class="section has-background-gold has-text-centered-desktop"
+  >
     <div class="container enter-terrace-container">
       <div class="columns is-multiline is-centered has-text-centered">
         <div class="column is-12">
@@ -32,7 +35,7 @@
                 >
                   <div class="avatar-container">
                     <img
-                      src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" height="100px" width="100px"></svg>'
+                      src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 100 100" height="100px" width="100px"></svg>'
                       alt="square placeholder"
                       class="avatar-placeholder"
                     />
@@ -58,7 +61,16 @@
                     type="text"
                     class="input is-medium"
                     placeholder="Enter nickname"
+                    @keypress.enter="create"
                   />
+                  <ul v-if="loginErrors" class="help is-danger">
+                    <li
+                      v-for="(error, index) in loginErrors"
+                      :key="'error-' + index"
+                    >
+                      {{ error.message || error }}
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -66,6 +78,8 @@
           <div class="column is-12 has-text-centered">
             <button
               class="button is-primary is-large has-arrow is-rounded is-fullwidth is-enter-terrace"
+              :disabled="entering"
+              @click="create"
             >
               Enter Terrace
             </button>
@@ -77,7 +91,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Countdown from '~/components/Countdown'
 
 export default {
@@ -87,15 +101,112 @@ export default {
   data() {
     return {
       selectedAvatar: null,
-      nickname: null
+      nickname: null,
+      loginErrors: null,
+      entering: false
     }
   },
   computed: {
     ...mapState({
+      avatars: 'avatars',
+      sessionId: 'sessionId',
+      username: 'username'
+    }),
+    ...mapGetters({
       match: 'currentMatch',
       gatesOpen: 'gatesOpen',
-      avatars: 'avatars'
+      user: 'bwstarter/user'
     })
+  },
+  mounted() {
+    if (this.user) {
+      this.nickname = this.user.username
+      this.selectedAvatar = this.user.avatar
+    }
+  },
+  methods: {
+    async create() {
+      if (this.entering) {
+        return
+      }
+      this.loginErrors = null
+      this.entering = true
+      const axiosData = {
+        avatar: this.selectedAvatar || '',
+        username: this.nickname || '',
+        plainPassword: this.sessionId
+      }
+      const axiosOps = {
+        progress: false
+      }
+      try {
+        let endpoint = '/chat_users'
+        if (this.user) {
+          if (
+            this.user.username === this.nickname &&
+            this.user.avatar === this.selectedAvatar
+          ) {
+            this.goToTerrace()
+            return
+          }
+
+          endpoint += '/' + this.user.id
+        }
+        const { data: user } = await this.$axios[this.user ? 'put' : 'post'](
+          endpoint,
+          axiosData,
+          axiosOps
+        )
+        const username = user.username
+        await this.login(username)
+      } catch (createUserError) {
+        this.handleError(createUserError)
+      }
+      this.entering = false
+    },
+    async login(username) {
+      if (this.user) {
+        await this.$bwstarter.logout()
+      }
+      try {
+        const {
+          data: { token }
+        } = await this.$axios.post(
+          '/login',
+          {
+            username: username,
+            password: this.sessionId,
+            _action: '/login_check'
+          },
+          {
+            baseURL: null
+          }
+        )
+        this.$bwstarter.$storage.setState('token', token)
+        this.goToTerrace()
+      } catch (loginError) {
+        this.handleError(loginError)
+      }
+    },
+    goToTerrace() {
+      this.$router.push('/iploughlane/match')
+    },
+    handleError(error) {
+      if (error.response) {
+        const data = error.response.data
+        if (data.violations !== undefined) {
+          this.loginErrors = data.violations
+        } else if (data['hydra:description']) {
+          this.loginErrors = [data['hydra:description']]
+        } else if (data.error && data.error.message) {
+          this.loginErrors = [data.error.message]
+        } else {
+          this.loginErrors = [data]
+        }
+      } else {
+        this.loginErrors = [error]
+      }
+    }
   }
 }
 </script>

@@ -33,3 +33,7 @@ services:
             - '%env(TWITTER_CONSUMER_SECRET)%'
             - '%env(TWITTER_ACCESS_TOKEN)%'
             - '%env(TWITTER_ACCESS_TOKEN_SECRET)%'
+
+    App\EventListener\JWTCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }

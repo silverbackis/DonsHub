@@ -15,6 +15,7 @@ use App\Repository\MatchRepository;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -137,6 +138,9 @@ class UpdateMatchesHandler implements MessageHandlerInterface
             );
             if ($existingTeam) {
                 $existingTeam->setOverallLeaguePosition($team->getOverallLeaguePosition());
+                $existingTeam->setGoalDifference($team->getGoalDifference());
+                $existingTeam->setGamesPlayed($team->getGamesPlayed());
+                $this->entityManager->persist($existingTeam);
             } else {
                 $team->setMatchLeague($league);
                 $this->entityManager->persist($team);
@@ -193,6 +197,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
     /**
      * @param $matchesArray
      * @throws ExceptionInterface
+     * @throws Exception
      */
     private function processMatchData($matchesArray): void
     {
@@ -209,6 +214,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
             );
             if ($existingMatch && $existingMatch->isMatchSame($match)) {
                 $existingMatch->updateFromMatch($match);
+                $this->entityManager->persist($existingMatch);
                 continue;
             }
             $this->entityManager->persist($match);

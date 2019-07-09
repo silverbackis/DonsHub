@@ -27,14 +27,7 @@
           </div>
         </div>
         <div class="gate-countdown">
-          <template v-if="gatesOpen">
-            <p class="has-text-primary has-text-weight-bold is-size-4">
-              Match {{ match.matchStatus || 'Started' }}
-            </p>
-          </template>
-          <template v-else>
-            <countdown />
-          </template>
+          <countdown />
         </div>
       </div>
       <div class="column is-6">
@@ -75,7 +68,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Countdown from './Countdown'
 
 export default {
@@ -83,14 +76,12 @@ export default {
     Countdown
   },
   computed: {
-    ...mapState({
-      match: 'currentMatch'
-    }),
     ...mapGetters({
       gatesOpen: 'gatesOpen',
       momentDate: 'matchDateTime',
       displayDate: 'matchDisplayDateTime',
-      gatesMoment: 'gatesDateTime'
+      gatesMoment: 'gatesDateTime',
+      match: 'currentMatch'
     })
   }
 }

@@ -3,13 +3,13 @@ version: '3.4'
 x-cache:
   &cache
   cache_from:
-    - ${CONTAINER_REGISTRY_BASE}/php
-    - ${CONTAINER_REGISTRY_BASE}/nginx
-    - ${CONTAINER_REGISTRY_BASE}/varnish
+    - quay.io/api-platform/php
+    - quay.io/api-platform/nginx
+    - quay.io/api-platform/varnish
 
 services:
   php:
-    image: ${CONTAINER_REGISTRY_BASE}/php
+    image: quay.io/api-platform/php
     build:
       context: ./api
       target: api_platform_php
@@ -17,15 +17,14 @@ services:
     depends_on:
       - db
       - rabbitmq
-    # Comment out these volumes in production
     volumes:
-      - php-pid:/tmp/PID:rw,cached
       - ./api:/srv/api:rw,cached
+      - php-pid:/tmp/PID:rw,cached
       # If you develop on Linux, uncomment the following line to use a bind-mounted host directory instead
       # - ./api/var:/srv/api/var:rw
 
   api:
-    image: ${CONTAINER_REGISTRY_BASE}/nginx
+    image: quay.io/api-platform/nginx
     build:
       context: ./api
       target: api_platform_nginx
@@ -39,7 +38,7 @@ services:
       - "8080:80"
 
   cache-proxy:
-    image: ${CONTAINER_REGISTRY_BASE}/varnish
+    image: quay.io/api-platform/varnish
     build:
       context: ./api
       target: api_platform_varnish
@@ -95,11 +94,11 @@ services:
   admin:
     # Use a static website hosting service in production
     # See https://facebook.github.io/create-react-app/docs/deployment
-    image: ${CONTAINER_REGISTRY_BASE}/admin
+    image: quay.io/api-platform/admin
     build:
       context: ./admin
       cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/admin
+        - quay.io/api-platform/admin
     volumes:
       - ./admin:/usr/src/admin:rw,cached
       - /usr/src/admin/node_modules

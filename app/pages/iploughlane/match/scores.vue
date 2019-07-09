@@ -1,0 +1,71 @@
+<template>
+  <section class="section scores">
+    <div class="container has-text-centered">
+      <h1 class="title has-text-primary">{{ match.leagueName }}</h1>
+    </div>
+    <div v-if="!match.matchLeague" class="has-text-centered">
+      <h2 class="subtitle">No league information available</h2>
+    </div>
+    <div v-else class="striped-table">
+      <scores-row
+        v-for="score in scores"
+        :key="score['@id']"
+        class="row"
+        :score="score"
+      />
+    </div>
+  </section>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import moment from 'moment'
+import ScoresRow from '~/components/iploughlane/ScoresRow'
+
+export default {
+  components: { ScoresRow },
+  computed: {
+    ...mapGetters({
+      match: 'currentMatch'
+    })
+  },
+  async asyncData({ $axios, $bwstarter }) {
+    const date = moment().format('YYY-MM-DD')
+    const { data } = await $axios.get(
+      `/matches?matchDateTime[after]==${date}&matchDateTime[before]=${date}`
+    )
+    const scoreEntities = {}
+    data['hydra:member'].forEach(match => {
+      scoreEntities[match['@id']] = match
+    })
+    $bwstarter.setEntities(scoreEntities)
+    return {
+      scores: data['hydra:member'].map(match => match['@id'])
+    }
+  },
+  head: {
+    title: 'Scores'
+  }
+}
+</script>
+
+<style lang="sass">
+@import "assets/sass/utilities"
+.section.scores
+  padding-left: 0
+  padding-right: 0
+  h1
+    margin-bottom: .5rem
+  .striped-table
+    font-size: 1.15rem
+    +mobile
+      font-size: 1rem
+    .row
+      color: $grey-dark
+      &:nth-child(2n+2)
+        background: $white
+      .columns
+        margin: 0
+        .column:nth-child(2)
+          color: $blue
+</style>

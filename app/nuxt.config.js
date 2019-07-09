@@ -7,6 +7,7 @@ module.exports = {
    ** Headers of the page
    */
   head: {
+    title: 'Unnamed',
     titleTemplate: '%s - Dons Hub',
     meta: [
       { charset: 'utf-8' },
@@ -35,9 +36,11 @@ module.exports = {
    ** Nuxt.js modules
    */
   modules: [
+    '@cwamodules/core',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    'cookie-universal-nuxt'
   ],
   /*
    ** Axios module configuration

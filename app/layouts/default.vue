@@ -69,7 +69,7 @@ export default {
   .page
     background-color: $gold
   .footer
-    background: lighten($grey-lighter, 10%)
+    background: $grey-lightest
     color: $grey
     a
       color: inherit

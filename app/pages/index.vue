@@ -41,6 +41,8 @@ export default {
 .home-page .hero.is-primary
   padding-bottom: 3.5rem
   .sw19
-    top: 95px
+    top: -20px
+    +mobile
+      top: 95px
     max-height: 360px
 </style>

@@ -1,3 +1,4 @@
 gesdinet_jwt_refresh_token:
-    user_identity_field: id
+    user_identity_field: username
     firewall: main
+    user_provider: security.user.provider.concrete.chat_user_provider

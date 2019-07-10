@@ -6,7 +6,7 @@ use App\DataPersister\FootballDataPersister;
 use App\DataProvider\FootballDataProvider;
 use App\Entity\Match;
 use App\Exception\FootballApiException;
-use App\Exception\UpdateMatchesException;
+use App\Exception\UpdateMatchesHandlerException;
 use App\Message\UpdateMatchMessage;
 use App\Repository\MatchLeagueRepository;
 use App\Repository\MatchRepository;
@@ -125,14 +125,14 @@ class UpdateMatchesHandler implements MessageHandlerInterface
     // We validate the message we receive in the handler is the latest looping message
     /**
      * @param UpdateMatchMessage $message
-     * @throws UpdateMatchesException
+     * @throws UpdateMatchesHandlerException
      */
     private function validateMessage(UpdateMatchMessage $message): void
     {
         $PID = file_get_contents(self::$PIDFile);
         $messageTimestamp = $message->getId();
         if ($PID !== $messageTimestamp) {
-            throw new UpdateMatchesException(sprintf('Message received is not valid. (%s !== %s)', $PID, $messageTimestamp));
+            throw new UpdateMatchesHandlerException(sprintf('Message received is not valid. (%s !== %s)', $PID, $messageTimestamp));
         }
     }
 
@@ -146,7 +146,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws UpdateMatchesException
+     * @throws UpdateMatchesHandlerException
      */
     public function __invoke(UpdateMatchMessage $message)
     {
@@ -175,7 +175,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
             $this->validateMessage($message);
             $message->setSleepSeconds($this->getNextSleepTime($currentMatch));
             $this->messageBus->dispatch($message);
-        } catch (UpdateMatchesException $e) {
+        } catch (UpdateMatchesHandlerException $e) {
             // No longer a valid message, stop the loop
         }
     }

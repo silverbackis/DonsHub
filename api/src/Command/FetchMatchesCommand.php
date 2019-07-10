@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Exception\FootballApiException;
-use App\Exception\UpdateMatchesException;
+use App\Exception\UpdateMatchesHandlerException;
 use App\Handler\UpdateMatchesHandler;
 use App\Message\UpdateMatchMessage;
 use Exception;
@@ -17,9 +17,9 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class MatchesUpdateCommand extends Command
+class FetchMatchesCommand extends Command
 {
-    protected static $defaultName = 'app:matches:update';
+    protected static $defaultName = 'app:fetch:matches';
     private $matchesHandler;
 
     public function __construct(
@@ -47,7 +47,7 @@ class MatchesUpdateCommand extends Command
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws UpdateMatchesException
+     * @throws UpdateMatchesHandlerException
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)

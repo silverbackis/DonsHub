@@ -36,7 +36,10 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		bin/console doctrine:schema:update --force --no-interaction
 	fi
 
-	bin/console app:matches:update || EXIT_CODE=$? && true
+	bin/console app:fetch:matches || EXIT_CODE=$? && true
+  echo ${EXIT_CODE}
+
+  bin/console app:fetch:tweets || EXIT_CODE=$? && true
   echo ${EXIT_CODE}
 fi
 

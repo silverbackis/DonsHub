@@ -5,7 +5,7 @@ namespace App\DataProvider;
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\InstagramPost;
-use App\Entity\Tweet;
+use App\Entity\TweetOld;
 
 final class InstagramPostItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
@@ -14,7 +14,7 @@ final class InstagramPostItemDataProvider implements ItemDataProviderInterface, 
         return InstagramPost::class === $resourceClass;
     }
 
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?Tweet
+    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?TweetOld
     {
         return null;
     }

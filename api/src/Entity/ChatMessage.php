@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     mercure="true",
  *     normalizationContext={ "groups"={"chat_message:read"} },
  *     denormalizationContext={ "groups"={"chat_message:write"} },
- *     attributes={ "pagination_items_per_page"=10, "order"={"created": "DESC"} },
+ *     attributes={ "pagination_items_per_page"=10, "order"={"created": "DESC"}, "access_control"="is_granted('ROLE_USER')" },
  *     itemOperations={
  *         "GET",
  *         "DELETE"={ "access_control"="is_granted('ROLE_ADMIN') or (is_granted('ROLE_USER') and object.chatUser == user)" }

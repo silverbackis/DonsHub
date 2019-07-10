@@ -1,5 +1,5 @@
 <template>
-  <div class="columns flex-direction-column layout is-gapless">
+  <div class="columns flex-direction-column layout is-gapless is-mobile">
     <div class="column is-narrow">
       <nav-bar />
     </div>

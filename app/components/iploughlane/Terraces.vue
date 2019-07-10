@@ -47,11 +47,17 @@ export default {
     position: absolute
     top: 50%
     left: 50%
-    transform: translate3d(-50%, -50%, 0)
+    transform: translate3d(-50%, -60%, 0)
     padding: 2rem
     background: rgba($white, .95)
     max-width: 500px
     width: 90%
+    +mobile
+      padding: 1.4rem
+      .title
+        font-size: 1.4rem
+      p
+        font-size: .9rem
   .terrace
     position: relative
     background: #E3DDCD

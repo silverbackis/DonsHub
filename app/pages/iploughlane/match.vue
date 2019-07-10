@@ -1,27 +1,33 @@
 <template>
-  <div class="columns flex-direction-column white-page is-gapless match-page">
+  <div
+    class="columns flex-direction-column white-page is-gapless match-page is-mobile"
+  >
     <div class="column is-narrow">
       <scoreboard />
       <terraces :users="users" />
     </div>
     <div class="column page-content">
-      <div class="tabs is-centered is-medium is-marginless">
-        <ul>
-          <app-link tag="li" :to="getRoute('/chat')">
-            <a>Chat</a>
-          </app-link>
-          <app-link tag="li" :to="getRoute('/live')">
-            <a>Live</a>
-          </app-link>
-          <app-link tag="li" :to="getRoute('/scores')">
-            <a>Scores</a>
-          </app-link>
-          <app-link tag="li" :to="getRoute('/table')">
-            <a>Table</a>
-          </app-link>
-        </ul>
+      <div
+        class="columns flex-direction-column is-gapless is-mobile tabs-vertical-columns"
+      >
+        <div class="column is-narrow tabs is-centered is-medium is-marginless">
+          <ul>
+            <app-link tag="li" :to="getRoute('/chat')">
+              <a>Chat</a>
+            </app-link>
+            <app-link tag="li" :to="getRoute('/live')">
+              <a>Live</a>
+            </app-link>
+            <app-link tag="li" :to="getRoute('/scores')">
+              <a>Scores</a>
+            </app-link>
+            <app-link tag="li" :to="getRoute('/table')">
+              <a>Table</a>
+            </app-link>
+          </ul>
+        </div>
+        <nuxt-child class="column" />
       </div>
-      <nuxt-child :route-prefix="routePrefix" />
     </div>
   </div>
 </template>
@@ -84,7 +90,9 @@ export default {
 .match-page
   .page-content
     background: $grey-lightest
-    > .tabs
+    .tabs-vertical-columns
+      height: 100%
+    .tabs
       position: sticky
       top: 0
       background: $white

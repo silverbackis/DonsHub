@@ -56,11 +56,15 @@ export default {
   .columns
     align-items: flex-end
   +mobile
-    font-size: 1.3rem
+    font-size: 1.2rem
   .score
-    margin-left: .7rem
+    margin-left: .5rem
+    +mobile
+      margin-left: .2rem
   .scoreboard-time
     font-size: 1rem
     color: $white
     text-align: right
+    +mobile
+      font-size: .8rem
 </style>

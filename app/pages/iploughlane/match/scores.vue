@@ -24,7 +24,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import moment from 'moment'
 import ScoresRow from '~/components/iploughlane/ScoresRow'
 
 export default {
@@ -36,14 +35,24 @@ export default {
   },
   computed: {
     ...mapGetters({
-      match: 'currentMatch'
+      match: 'currentMatch',
+      matchDateTime: 'matchDateTime'
     })
   },
   async mounted() {
-    const date = moment().format('YYY-MM-DD')
-    const { data } = await this.$axios.get(
-      `/matches?matchDateTime[after]==${date}&matchDateTime[before]=${date}`
-    )
+    const date = this.matchDateTime.format('YYYY-MM-DD')
+    const searchParams = {
+      'matchDateTime[after]': date + ' 00:00:00',
+      'matchDateTime[before]': date + ' 23:59:59'
+    }
+    const qs = Object.keys(searchParams)
+      .map(key => {
+        return (
+          encodeURIComponent(key) + '=' + encodeURIComponent(searchParams[key])
+        )
+      })
+      .join('&')
+    const { data } = await this.$axios.get('/matches?' + qs)
     const scoreEntities = {}
     data['hydra:member'].forEach(match => {
       scoreEntities[match['@id']] = match

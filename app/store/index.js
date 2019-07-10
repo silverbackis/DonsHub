@@ -79,7 +79,8 @@ export default {
         .format('Do MMM Y @ HH:mm')
     },
     gatesOpen(state, getters) {
-      return moment.utc().diff(getters.gatesDateTime) > 0
+      return true
+      // return moment.utc().diff(getters.gatesDateTime) > 0
     },
     currentMatch(state, getters, rootState, rootGetters) {
       return rootGetters['bwstarter/_entities/getEntity'](state.currentMatch)

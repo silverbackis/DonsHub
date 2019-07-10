@@ -4,7 +4,7 @@
       <h1 class="title has-text-primary">{{ match.leagueName }}</h1>
     </div>
     <div v-if="!match.matchLeague" class="has-text-centered">
-      <h2 class="subtitle">No league information available</h2>
+      <h2 class="subtitle">No scores available</h2>
     </div>
     <div v-else class="striped-table">
       <scores-row
@@ -24,24 +24,27 @@ import ScoresRow from '~/components/iploughlane/ScoresRow'
 
 export default {
   components: { ScoresRow },
+  data() {
+    return {
+      scores: []
+    }
+  },
   computed: {
     ...mapGetters({
       match: 'currentMatch'
     })
   },
-  async asyncData({ $axios, $bwstarter }) {
+  async mounted() {
     const date = moment().format('YYY-MM-DD')
-    const { data } = await $axios.get(
+    const { data } = await this.$axios.get(
       `/matches?matchDateTime[after]==${date}&matchDateTime[before]=${date}`
     )
     const scoreEntities = {}
     data['hydra:member'].forEach(match => {
       scoreEntities[match['@id']] = match
     })
-    $bwstarter.setEntities(scoreEntities)
-    return {
-      scores: data['hydra:member'].map(match => match['@id'])
-    }
+    this.$bwstarter.setEntities(scoreEntities)
+    this.scores = data['hydra:member'].map(match => match['@id'])
   },
   head: {
     title: 'Scores'

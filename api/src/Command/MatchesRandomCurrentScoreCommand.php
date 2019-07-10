@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MatchesRandomCurrentScoreCommand extends Command
 {
-    protected static $defaultName = 'app:matches:current:random-score';
+    protected static $defaultName = 'app:matches:random-score';
     private $entityManager;
     private $matchRepository;
 

@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import { name as entitiesModuleName } from '~/.nuxt/bwstarter/core/storage/entities'
+import { mapGetters } from 'vuex'
 import Scoreboard from '~/components/iploughlane/Scoreboard'
 import Terraces from '~/components/iploughlane/Terraces'
 import AppLink from '~/components/AppLink'
+import MercureMixin from '~/components/MercureMixin'
 
 export default {
   components: {
@@ -39,15 +39,8 @@ export default {
     Terraces,
     AppLink
   },
-  data() {
-    return {
-      eventSource: null
-    }
-  },
+  mixins: [MercureMixin],
   computed: {
-    ...mapState({
-      mercureHub: 'mercureHub'
-    }),
     ...mapGetters({
       gatesOpen: 'gatesOpen'
     })
@@ -66,26 +59,9 @@ export default {
     }
   },
   mounted() {
-    const mercureUrl = new URL(this.mercureHub)
-    const baseUrl = new URL(this.$store.state.baseUrl)
-    const topicBaseUrl = baseUrl.protocol + '//' + baseUrl.hostname
-    mercureUrl.searchParams.append('topic', topicBaseUrl + '/matches/{id}')
-    this.eventSource = new EventSource(mercureUrl.toString())
-    this.eventSource.onmessage = this.receiveMatchData
-  },
-  beforeDestroy() {
-    this.eventSource.onmessage = null
-    this.eventSource = null
+    this.mercureMount(['/matches/{id}'])
   },
   methods: {
-    receiveMatchData({ data: json }) {
-      const data = JSON.parse(json)
-      this.$bwstarter.$storage.commit(
-        'setEntity',
-        [{ id: data['@id'], data }],
-        entitiesModuleName
-      )
-    },
     getRoute(path) {
       return this.routePrefix + path
     }

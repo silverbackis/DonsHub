@@ -46,9 +46,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import LeagueTableRow from '~/components/iploughlane/LeagueTableRow'
+import MercureMixin from '~/components/MercureMixin'
 
 export default {
   components: { LeagueTableRow },
+  mixins: [MercureMixin],
   data() {
     return {
       leagueData: null
@@ -73,6 +75,8 @@ export default {
     })
     this.$bwstarter.setEntities(leagueTeams)
     this.leagueData = teams.map(team => team['@id'])
+
+    this.mercureMount(['/match_league_teams/{id}'])
   },
   head: {
     title: 'Scores'

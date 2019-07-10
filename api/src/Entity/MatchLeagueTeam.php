@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * )
  * @ORM\Entity(repositoryClass="App\Repository\MatchLeagueTeamRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(indexes={@ORM\Index(name="match_league_index", columns={"match_league_id"})})
  */
 class MatchLeagueTeam
 {

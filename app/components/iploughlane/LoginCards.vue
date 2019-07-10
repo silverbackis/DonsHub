@@ -35,7 +35,7 @@
                 >
                   <div class="avatar-container">
                     <img
-                      src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 100 100" height="100px" width="100px"></svg>'
+                      :src="squarePlaceholder"
                       alt="square placeholder"
                       class="avatar-placeholder"
                     />
@@ -103,7 +103,9 @@ export default {
       selectedAvatar: null,
       nickname: null,
       loginErrors: null,
-      entering: false
+      entering: false,
+      squarePlaceholder:
+        'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 100 100" height="100px" width="100px"></svg>'
     }
   },
   computed: {

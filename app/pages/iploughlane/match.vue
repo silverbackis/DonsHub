@@ -84,6 +84,11 @@ export default {
 .match-page
   .page-content
     background: $grey-lightest
+    > .tabs
+      position: sticky
+      top: 0
+      background: $white
+      z-index: 10
     .has-text-centered .loader
       display: inline-block
     .section > .container:first-child > h1

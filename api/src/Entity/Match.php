@@ -9,6 +9,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Controller\MatchesCurrentController;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiFilter(DateFilter::class, properties={"matchDateTime"})
  * @ORM\Entity(repositoryClass="App\Repository\MatchRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(indexes={ @ORM\Index(name="match_date_time_index", columns={"match_date_time"}), @ORM\Index(name="home_team_name", columns={"match_home_team_name"}) })
  */
 class Match
 {
@@ -123,6 +126,16 @@ class Match
      * @ORM\Column(type="datetime")
      */
     protected $updated;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ChatMessage", mappedBy="match", orphanRemoval=true)
+     */
+    private $chatMessages;
+
+    public function __construct()
+    {
+        $this->chatMessages = new ArrayCollection();
+    }
 
     /**
      * @ORM\PrePersist
@@ -367,6 +380,37 @@ class Match
         if ($thisDT != $compareDT) {
             $this->setMatchDateTime($match->getMatchDateTime());
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection|ChatMessage[]
+     */
+    public function getChatMessages(): Collection
+    {
+        return $this->chatMessages;
+    }
+
+    public function addChatMessage(ChatMessage $chatMessage): self
+    {
+        if (!$this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages[] = $chatMessage;
+            $chatMessage->setMatch($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatMessage(ChatMessage $chatMessage): self
+    {
+        if ($this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages->removeElement($chatMessage);
+            // set the owning side to null (unless already changed)
+            if ($chatMessage->getMatch() === $this) {
+                $chatMessage->setMatch(null);
+            }
+        }
+
         return $this;
     }
 }

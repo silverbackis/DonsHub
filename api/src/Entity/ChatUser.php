@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ChatUserPostAction;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -38,7 +40,7 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="Please enter a nickname")
-     * @Groups({"user:write", "user:read"})
+     * @Groups({"user:write", "user:read", "chat_message:read"})
      */
     private $username;
 
@@ -63,13 +65,19 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Please select an avatar")
-     * @Groups({"user:write", "user:read"})
+     * @Groups({"user:write", "user:read", "chat_message:read"})
      */
     private $avatar;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ChatMessage", mappedBy="chatUser", orphanRemoval=true)
+     */
+    private $chatMessages;
 
     public function __construct()
     {
         $this->id = Uuid::uuid4();
+        $this->chatMessages = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -149,5 +157,36 @@ class ChatUser implements UserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|ChatMessage[]
+     */
+    public function getChatMessages(): Collection
+    {
+        return $this->chatMessages;
+    }
+
+    public function addChatMessage(ChatMessage $chatMessage): self
+    {
+        if (!$this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages[] = $chatMessage;
+            $chatMessage->setChatUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatMessage(ChatMessage $chatMessage): self
+    {
+        if ($this->chatMessages->contains($chatMessage)) {
+            $this->chatMessages->removeElement($chatMessage);
+            // set the owning side to null (unless already changed)
+            if ($chatMessage->getChatUser() === $this) {
+                $chatMessage->setChatUser(null);
+            }
+        }
+
+        return $this;
     }
 }

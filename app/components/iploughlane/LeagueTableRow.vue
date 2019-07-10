@@ -8,7 +8,7 @@
         <div
           class="column"
           :class="{
-            'has-text-weight-bold': teamData.matchHomeTeamId === clubTeamId
+            'has-text-weight-bold': teamData.teamId === clubTeamId
           }"
         >
           {{ teamData.teamName }}

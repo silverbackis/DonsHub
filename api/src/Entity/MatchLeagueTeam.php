@@ -36,6 +36,12 @@ class MatchLeagueTeam
      * @ORM\Column(type="integer")
      * @Groups({"match_league:read"})
      */
+    private $teamId;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"match_league:read"})
+     */
     private $overallLeaguePosition;
 
     /**
@@ -91,7 +97,17 @@ class MatchLeagueTeam
         return $this;
     }
 
-    public function getOverallLeaguePosition(): ?int
+    public function getTeamId(): int
+    {
+        return $this->teamId;
+    }
+
+    public function setTeamId(int $teamId): void
+    {
+        $this->teamId = $teamId;
+    }
+
+    public function getOverallLeaguePosition(): int
     {
         return $this->overallLeaguePosition;
     }

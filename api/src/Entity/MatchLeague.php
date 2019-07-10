@@ -6,10 +6,13 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
  *     mercure="true",
+ *     normalizationContext={"groups"={"match_league:read"}},
+ *     denormalizationContext={"groups"={"match_league:write"}},
  *     itemOperations={ "GET" },
  *     collectionOperations={ "GET" }
  * )
@@ -32,6 +35,8 @@ class MatchLeague
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\MatchLeagueTeam", mappedBy="matchLeague", orphanRemoval=true)
+     * @ORM\OrderBy({"overallLeaguePosition"="ASC"})
+     * @Groups({"match_league:read"})
      */
     private $matchLeagueTeams;
 

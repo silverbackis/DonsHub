@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\DataProvider\FootballDataProvider;
 use App\Entity\Match;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -30,41 +31,13 @@ class MatchRepository extends ServiceEntityRepository
                     'm.matchAwayTeamId = :team_id'
                 )
             )
-            ->andWhere('m.matchDateTime >= CURRENT_DATE()')
+            ->andWhere('m.matchDateTime >= :min_date')
             ->setParameter('team_id', FootballDataProvider::$teamId)
+            ->setParameter('min_date', (new DateTime('now'))->setTime(0, 0))
             ->orderBy('m.matchDateTime', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-
-    // /**
-    //  * @return Game[] Returns an array of Game objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Game
-    {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

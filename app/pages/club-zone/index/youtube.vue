@@ -3,7 +3,9 @@
     <div class="container">
       <div class="columns is-multiline is-centered is-mobile">
         <div v-if="!youtubeData" class="column is-narrow">
-          <div class="loader is-medium is-primary"></div>
+          <div class="loader is-medium is-primary">
+            <span class="is-sr-only">Loading</span>
+          </div>
         </div>
         <div
           v-for="video in videos"

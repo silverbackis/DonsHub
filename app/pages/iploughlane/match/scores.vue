@@ -3,7 +3,12 @@
     <div class="container has-text-centered">
       <h1 class="title has-text-primary">{{ match.leagueName }}</h1>
     </div>
-    <div v-if="!match.matchLeague" class="has-text-centered">
+    <div v-if="scores === null" class="has-text-centered">
+      <div class="loader is-medium is-primary">
+        <span class="is-sr-only">Loading</span>
+      </div>
+    </div>
+    <div v-else-if="!scores.length" class="has-text-centered">
       <h2 class="subtitle">No scores available</h2>
     </div>
     <div v-else class="striped-table">
@@ -26,7 +31,7 @@ export default {
   components: { ScoresRow },
   data() {
     return {
-      scores: []
+      scores: null
     }
   },
   computed: {
@@ -57,8 +62,6 @@ export default {
 .section.scores
   padding-left: 0
   padding-right: 0
-  h1
-    margin-bottom: .5rem
   .striped-table
     font-size: 1.15rem
     +mobile

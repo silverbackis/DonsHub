@@ -3,7 +3,12 @@
     <div class="container has-text-centered">
       <h1 class="title has-text-primary">{{ match.leagueName }}</h1>
     </div>
-    <div v-if="!match.matchLeague" class="has-text-centered">
+    <div v-if="leagueData === null" class="has-text-centered">
+      <div class="loader is-medium is-primary">
+        <span class="is-sr-only">Loading</span>
+      </div>
+    </div>
+    <div v-else-if="!leagueData.length" class="has-text-centered">
       <h2 class="subtitle">No league information available</h2>
     </div>
     <div v-else class="striped-table">
@@ -16,51 +21,58 @@
             <div class="column">
               Team
             </div>
-            <div class="column is-1 is-hidden-mobile">
+            <div class="column is-1 is-hidden-mobile has-text-centered">
               GP
             </div>
-            <div class="column is-1 is-hidden-mobile">
+            <div class="column is-1 is-hidden-mobile has-text-centered">
               GD
             </div>
-            <div class="column is-2">
+            <div class="column is-1 has-text-centered">
               PTS
             </div>
           </div>
         </div>
       </div>
-      <div v-for="x in 20" :key="'tr-' + x" class="row">
-        <div class="container">
-          <div class="columns is-mobile is-fullwidth">
-            <div class="column is-1">
-              {{ x }}
-            </div>
-            <div class="column">
-              Team
-            </div>
-            <div class="column is-1 is-hidden-mobile">
-              GP
-            </div>
-            <div class="column is-1 is-hidden-mobile">
-              GD
-            </div>
-            <div class="column is-2">
-              PTS
-            </div>
-          </div>
-        </div>
-      </div>
+      <league-table-row
+        v-for="team in leagueData"
+        :key="team"
+        class="row"
+        :team="team"
+      />
     </div>
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import LeagueTableRow from '~/components/iploughlane/LeagueTableRow'
 
 export default {
+  components: { LeagueTableRow },
+  data() {
+    return {
+      leagueData: null
+    }
+  },
   computed: {
     ...mapGetters({
       match: 'currentMatch'
     })
+  },
+  async mounted() {
+    if (!this.match.matchLeague) {
+      this.leagueData = []
+      return
+    }
+    const {
+      data: { matchLeagueTeams: teams }
+    } = await this.$axios.get(this.match.matchLeague)
+    const leagueTeams = {}
+    teams.forEach(team => {
+      leagueTeams[team['@id']] = team
+    })
+    this.$bwstarter.setEntities(leagueTeams)
+    this.leagueData = teams.map(team => team['@id'])
   },
   head: {
     title: 'Scores'
@@ -81,6 +93,8 @@ export default {
       font-size: 1rem
     .row
       color: $blue
+      .column.is-1
+        min-width: 65px
       .columns
         margin: 0
       &:nth-child(2n+2)

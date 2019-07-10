@@ -56,6 +56,7 @@ export default {
     const routePrefix = '/iploughlane/match'
     if (route.name === 'iploughlane-match') {
       redirect(routePrefix + '/chat')
+      return {}
     }
 
     const { data: users } = await $axios.get('/chat_users')
@@ -107,4 +108,8 @@ export default {
 .match-page
   .page-content
     background: $grey-lightest
+    .has-text-centered .loader
+      display: inline-block
+    .section > .container:first-child > h1
+      margin-bottom: 1.5rem
 </style>

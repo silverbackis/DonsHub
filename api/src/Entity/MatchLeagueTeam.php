@@ -4,14 +4,18 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ApiResource(
  *     mercure="true",
  *     itemOperations={ "GET" },
- *     collectionOperations={ "GET" }
+ *     collectionOperations={ "GET" },
+ *     attributes={"pagination_items_per_page"=100, "order"={ "overallLeaguePosition": "ASC" }}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\MatchLeagueTeamRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class MatchLeagueTeam
 {
@@ -24,23 +28,45 @@ class MatchLeagueTeam
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"match_league:read"})
      */
     private $teamName;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match_league:read"})
      */
     private $overallLeaguePosition;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match_league:read"})
      */
-    private $gamesPlayed;
+    private $overallGamesPlayed;
 
     /**
      * @ORM\Column(type="integer")
+     * @SerializedName("overall_league_GF")
      */
-    private $goalDifference;
+    private $overallGoalsFor;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @SerializedName("overall_league_GA")
+     */
+    private $overallGoalsAgainst;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"match_league:read"})
+     */
+    private $overallGoalDifference;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"match_league:read"})
+     */
+    private $overallPoints;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\MatchLeague", inversedBy="matchLeagueTeams")
@@ -77,26 +103,50 @@ class MatchLeagueTeam
         return $this;
     }
 
-    public function getGamesPlayed(): int
+    public function getOverallGamesPlayed(): int
     {
-        return $this->gamesPlayed;
+        return $this->overallGamesPlayed;
     }
 
-    public function setGamesPlayed(int $gamesPlayed): self
+    public function setOverallGamesPlayed(int $overallGamesPlayed): self
     {
-        $this->gamesPlayed = $gamesPlayed;
+        $this->overallGamesPlayed = $overallGamesPlayed;
 
         return $this;
     }
 
-    public function getGoalDifference(): int
+    public function getOverallGoalsFor(): int
     {
-        return $this->goalDifference;
+        return $this->overallGoalsFor;
     }
 
-    public function setGoalDifference(int $goalDifference): self
+    public function setOverallGoalsFor(int $overallGoalsFor): self
     {
-        $this->goalDifference = $goalDifference;
+        $this->overallGoalsFor = $overallGoalsFor;
+
+        return $this;
+    }
+
+    public function getOverallGoalsAgainst(): int
+    {
+        return $this->overallGoalsAgainst;
+    }
+
+    public function setOverallGoalsAgainst(int $overallGoalsAgainst): self
+    {
+        $this->overallGoalsAgainst = $overallGoalsAgainst;
+
+        return $this;
+    }
+
+    public function getOverallPoints(): int
+    {
+        return $this->overallPoints;
+    }
+
+    public function setOverallPoints(int $overallPoints): self
+    {
+        $this->overallPoints = $overallPoints;
 
         return $this;
     }
@@ -111,5 +161,22 @@ class MatchLeagueTeam
         $this->matchLeague = $matchLeague;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function setOverallGoalDifference(): void
+    {
+        $this->overallGoalDifference = $this->getOverallGoalsFor() - $this->getOverallGoalsAgainst();
+    }
+
+    /**
+     * @Groups({"match_league:read"})
+     */
+    public function getOverallGoalDifference(): int
+    {
+        return $this->getOverallGoalsFor() - $this->getOverallGoalsAgainst();
     }
 }

@@ -15,7 +15,6 @@ use Doctrine\ORM\ORMException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -96,10 +95,7 @@ class UpdateMatchesHandler implements MessageHandlerInterface
         }
 
         $league = $this->leagueRepository->findOneByMatch($currentMatch);
-
-        foreach ($responseData as $leagueTeamData) {
-            $this->dataPersister->persistLeagueTeamData($league, $leagueTeamData);
-        }
+        $this->dataPersister->persistLeagueTeamData($league, $responseData);
     }
 
     private function getActiveMatch(?Match $match): ?Match

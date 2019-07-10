@@ -61,16 +61,10 @@
                     type="text"
                     class="input is-medium"
                     placeholder="Enter nickname"
+                    maxlength="180"
                     @keypress.enter="create"
                   />
-                  <ul v-if="loginErrors" class="help is-danger">
-                    <li
-                      v-for="(error, index) in loginErrors"
-                      :key="'error-' + index"
-                    >
-                      {{ error.message || error }}
-                    </li>
-                  </ul>
+                  <field-errors :errors="loginErrors" />
                 </div>
               </div>
             </div>
@@ -93,11 +87,15 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Countdown from '~/components/Countdown'
+import HandleErrorMixin from '~/components/HandleErrorMixin'
+import FieldErrors from '~/components/FieldErrors'
 
 export default {
   components: {
+    FieldErrors,
     Countdown
   },
+  mixins: [HandleErrorMixin],
   data() {
     return {
       selectedAvatar: null,
@@ -162,7 +160,7 @@ export default {
         const username = user.username
         await this.login(username)
       } catch (createUserError) {
-        this.handleError(createUserError)
+        this.loginErrors = this.getErrorMessages(createUserError)
       }
       this.entering = false
     },
@@ -187,27 +185,11 @@ export default {
         this.$bwstarter.$storage.setState('token', token)
         this.goToTerrace()
       } catch (loginError) {
-        this.handleError(loginError)
+        this.loginErrors = this.getErrorMessages(loginError)
       }
     },
     goToTerrace() {
       this.$router.push('/iploughlane/match')
-    },
-    handleError(error) {
-      if (error.response) {
-        const data = error.response.data
-        if (data.violations !== undefined) {
-          this.loginErrors = data.violations
-        } else if (data['hydra:description']) {
-          this.loginErrors = [data['hydra:description']]
-        } else if (data.error && data.error.message) {
-          this.loginErrors = [data.error.message]
-        } else {
-          this.loginErrors = [data]
-        }
-      } else {
-        this.loginErrors = [error]
-      }
     }
   }
 }
@@ -220,9 +202,11 @@ export default {
   .teams.title
     color: $blue
     font-size: 1.8rem
+    +mobile
+      font-size: 1.3rem
     .teams-vs
-      font-size: 1.4rem
-      line-height: 2.8rem
+      font-size: 1rem
+      line-height: 2rem
       display: inline-block
   .subtitle
     color: $blue

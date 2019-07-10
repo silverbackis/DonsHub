@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Controller\MatchesCurrentController;
@@ -12,12 +11,15 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
  *     mercure="true",
+ *     normalizationContext={"groups"={"match:read"}},
  *     itemOperations={ "GET" },
  *     collectionOperations={
+ *         "GET",
  *         "current"={
  *             "method"="GET",
  *             "path"="/matches/current",
@@ -25,8 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  *             "pagination_enabled"=false,
  *             "http_cache"={ "max_age"=0, "shared_max_age"=0 },
  *             "defaults"={"_api_receive"=false}
- *          },
- *          "GET"
+ *          }
  *     },
  *     attributes={"pagination_items_per_page"=200, "order"={"matchHomeTeamName": "ASC"}}
  * )
@@ -48,72 +49,85 @@ class Match
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $countryId;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"match:read"})
      */
     private $countryName;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $leagueId;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"match:read"})
      */
     private $leagueName;
 
     /**
      * @ORM\Column(type="datetimetz")
-     * @ApiProperty()
+     * @Groups({"match:read"})
      */
     private $matchDateTime;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"match:read"})
      */
     private $matchStatus;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $matchHomeTeamId;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"match:read"})
      */
     private $matchHomeTeamName;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $matchAwayTeamId;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"match:read"})
      */
     private $matchAwayTeamName;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $matchHomeTeamScore;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $matchAwayTeamScore;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"match:read"})
      */
     private $matchId;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\MatchLeague", mappedBy="match", cascade={"persist", "remove"})
+     * @Groups({"match:read"})
      */
     private $matchLeague;
 
@@ -315,6 +329,9 @@ class Match
         return $this;
     }
 
+    /**
+     * @Groups({"match:read"})
+     */
     public function getGatesOpen(): ?DateTime
     {
         if (!$gatesOpenTime = $this->getMatchDateTime()) {
@@ -324,6 +341,9 @@ class Match
         return $gatesOpenTime;
     }
 
+    /**
+     * @Groups({"match:read"})
+     */
     public function getSecondsUntilGatesOpen(): int
     {
         if (!($gatesOpenTime = $this->getGatesOpen())) {
@@ -333,6 +353,9 @@ class Match
         return max(0, ceil(($gatesOpenTime->getTimestamp() - $now->getTimestamp()) / 1000));
     }
 
+    /**
+     * @Groups({"match:read"})
+     */
     public function isGatesOpen(): bool
     {
         $secondsUntilOpen = $this->getSecondsUntilGatesOpen();

@@ -8,8 +8,10 @@ export default {
     }
   },
   beforeDestroy() {
-    this.eventSource.onmessage = null
-    this.eventSource = null
+    if (this.eventSource) {
+      this.eventSource.onmessage = null
+      this.eventSource = null
+    }
   },
   computed: {
     ...mapState({
@@ -24,13 +26,18 @@ export default {
         [{ id: data['@id'], data }],
         entitiesModuleName
       )
+      return data
     },
     mercureMount(topics) {
+      // it appears a port is added to topic when we use API Platform, but not when we are adding from the commands...
       const mercureUrl = new URL(this.mercureHub)
-      const baseUrl = new URL(this.$store.state.baseUrl)
-      const topicBaseUrl = baseUrl.protocol + '//' + baseUrl.hostname
+      const topicBaseUrl = 'http://{domain}'
       topics.forEach(topic => {
         mercureUrl.searchParams.append('topic', topicBaseUrl + topic)
+        mercureUrl.searchParams.append(
+          'topic',
+          topicBaseUrl + ':{port}' + topic
+        )
       })
       this.eventSource = new EventSource(mercureUrl.toString())
       this.eventSource.onmessage = this.receiveEntityData

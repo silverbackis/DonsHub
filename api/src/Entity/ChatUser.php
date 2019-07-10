@@ -15,11 +15,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *     mercure="true",
  *     normalizationContext={"groups"={"user:read"}},
  *     denormalizationContext={"groups"={"user:write"}},
  *     itemOperations={
  *         "GET",
- *          "PUT"={ "controller"=ChatUserPostAction::class, "access_control"="is_granted('ROLE_USER') and object == user" }
+ *         "PUT"={ "controller"=ChatUserPostAction::class, "access_control"="is_granted('ROLE_USER') and object == user" }
  *     },
  *     collectionOperations={
  *          "GET",
@@ -40,6 +41,7 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="Please enter a nickname")
+     * @Assert\Length(max="180", maxMessage="Your nickname cannot be more than 180 characters", min="3", minMessage="Your nickname must be at least 3 characters")
      * @Groups({"user:write", "user:read", "chat_message:read"})
      */
     private $username;
@@ -73,6 +75,22 @@ class ChatUser implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\ChatMessage", mappedBy="chatUser", orphanRemoval=true)
      */
     private $chatMessages;
+
+    /*
+    /**
+     * @ORM\Column(type="integer", options={"default" : 0})
+     * @Assert\Range(min="1", max="9", minMessage="You must be at least on the first terrace row", maxMessage="There are only 9 rows on the terrace")
+     * @var null|integer
+     */
+    private $terraceRow;
+
+    /*
+    /**
+     * @ORM\Column(type="integer", options={"default" : 0})
+     * @Assert\GreaterThan(value="0", message="The terrace seat must be at least 1")
+     * @var null|integer
+     */
+    private $terraceSeat;
 
     public function __construct()
     {
@@ -149,16 +167,6 @@ class ChatUser implements UserInterface
         return $this;
     }
 
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-    public function eraseCredentials(): void
-    {
-        $this->plainPassword = null;
-    }
-
     /**
      * @return Collection|ChatMessage[]
      */
@@ -188,5 +196,39 @@ class ChatUser implements UserInterface
         }
 
         return $this;
+    }
+
+    public function getTerraceRow(): ?int
+    {
+        return $this->terraceRow;
+    }
+
+    public function setTerraceRow(?int $terraceRow): self
+    {
+        $this->terraceRow = $terraceRow;
+
+        return $this;
+    }
+
+    public function getTerraceSeat(): ?int
+    {
+        return $this->terraceSeat;
+    }
+
+    public function setTerraceSeat(?int $terraceSeat): self
+    {
+        $this->terraceSeat = $terraceSeat;
+
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+        $this->plainPassword = null;
     }
 }

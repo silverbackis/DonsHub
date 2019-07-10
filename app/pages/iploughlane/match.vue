@@ -46,30 +46,49 @@ export default {
     AppLink
   },
   mixins: [MercureMixin],
+  data() {
+    return {
+      users: null
+    }
+  },
   computed: {
     ...mapGetters({
       gatesOpen: 'gatesOpen'
     })
   },
-  async asyncData({ $axios, route, redirect }) {
+  asyncData({ route, redirect }) {
     const routePrefix = '/iploughlane/match'
     if (route.name === 'iploughlane-match') {
       redirect(routePrefix + '/chat')
       return {}
     }
-
-    const { data: users } = await $axios.get('/chat_users')
     return {
-      routePrefix,
-      users
+      routePrefix
     }
   },
-  mounted() {
-    this.mercureMount(['/matches/{id}'])
+  async mounted() {
+    const { data: users } = await this.$axios.get('/chat_users')
+    const userEntities = {}
+    users['hydra:member'].forEach(user => {
+      userEntities[user['@id']] = user
+    })
+    this.$bwstarter.setEntities(userEntities)
+    this.users = users['hydra:member'].map(user => user['@id'])
+
+    this.mercureMount(['/matches/{id}', '/chat_users/{id}'])
+    this.eventSource.onmessage = this.mercureMessage
   },
   methods: {
     getRoute(path) {
       return this.routePrefix + path
+    },
+    mercureMessage({ data: json }) {
+      const data = this.receiveEntityData({ data: json })
+      if (data['@context'] === '/contexts/ChatUser') {
+        if (this.users.indexOf(data['@id']) === -1) {
+          this.users.unshift(data['@id'])
+        }
+      }
     }
   },
   head: {
@@ -100,5 +119,6 @@ export default {
     .has-text-centered .loader
       display: inline-block
     .section > .container:first-child > h1
-      margin-bottom: 1.5rem
+      margin-top: 2.5rem
+      margin-bottom: 2rem
 </style>

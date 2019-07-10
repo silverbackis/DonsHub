@@ -41,6 +41,6 @@ export default {
   .subtitle
     font-size: 1.75rem
   .sw19
-    top: -20px
+    top: 95px
     max-height: 360px
 </style>

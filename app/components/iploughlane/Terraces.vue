@@ -12,7 +12,7 @@
       </p>
     </div>
     <div class="attendance-bar has-background-primary has-text-white">
-      <div class="container">Attendance: {{ users['hydra:totalItems'] }}</div>
+      <div class="container">Attendance: {{ users ? users.length : '--' }}</div>
     </div>
   </div>
 </template>
@@ -25,8 +25,14 @@ export default {
   },
   props: {
     users: {
-      type: Object,
-      required: true
+      type: Array,
+      required: false,
+      default: null
+    }
+  },
+  computed: {
+    usersData() {
+      return this.users.map(user => this.getEntity(user))
     }
   }
 }

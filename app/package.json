@@ -14,8 +14,8 @@
     "test": "jest --projects --testRegex '_tests/.*\\.spec\\.js$'"
   },
   "dependencies": {
-    "@cwamodules/server": "^0.5.5",
     "@cwamodules/core": "^0.5.5",
+    "@cwamodules/server": "^0.5.5",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^2.6.0",
     "body-parser": "^1.19.0",

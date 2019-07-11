@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *             "path"="/matches/current",
  *             "controller"=MatchesCurrentController::class,
  *             "pagination_enabled"=false,
- *             "http_cache"={ "max_age"=0, "shared_max_age"=0 },
+ *             "http_cache"={ "max_age"=0, "shared_max_age"=1800 },
  *             "defaults"={"_api_receive"=false}
  *          }
  *     },

@@ -34,4 +34,17 @@ class ChatUserRepository extends ServiceEntityRepository implements UserLoaderIn
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function countUsers()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }

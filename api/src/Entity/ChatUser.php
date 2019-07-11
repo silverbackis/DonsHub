@@ -76,7 +76,6 @@ class ChatUser implements UserInterface
      */
     private $chatMessages;
 
-    /*
     /**
      * @ORM\Column(type="integer", options={"default" : 0})
      * @Assert\Range(min="1", max="9", minMessage="You must be at least on the first terrace row", maxMessage="There are only 9 rows on the terrace")
@@ -84,7 +83,6 @@ class ChatUser implements UserInterface
      */
     private $terraceRow;
 
-    /*
     /**
      * @ORM\Column(type="integer", options={"default" : 0})
      * @Assert\GreaterThan(value="0", message="The terrace seat must be at least 1")

@@ -14,12 +14,49 @@ export default function(endpoint) {
     data() {
       return {
         pollTimeout: null,
-        tweetData: null
+        tweets: null,
+        loadingMore: false,
+        loadedEarliest: false,
+        beforeDateTime: null,
+        page: 2
       }
     },
-    computed: {
-      tweets() {
-        return this.tweetData ? this.tweetData['hydra:member'] : []
+    methods: {
+      getTweetsUrl() {
+        return (
+          endpoint +
+          '?createdAt[before]=' +
+          encodeURIComponent(this.beforeDateTime) +
+          '&page=' +
+          this.page
+        )
+      },
+      async loadMore() {
+        if (this.loadedEarliest) {
+          return
+        }
+        if (this.loadingMore) {
+          return
+        }
+        this.loadingMore = true
+        const fetchUrl = this.getTweetsUrl()
+        const { data } = await this.$axios.get(fetchUrl, {
+          withCredentials: false
+        })
+        this.tweets.push(...data['hydra:member'])
+        this.page = this.page + 1
+        if (
+          !data['hydra:member'].length ||
+          data['hydra:view']['@id'] === data['hydra:view']['hydra:last']
+        ) {
+          this.loadedEarliest = true
+        }
+        this.loadingMore = false
+        this.$nextTick(() => {
+          if (window.twttr) {
+            window.twttr.widgets.load()
+          }
+        })
       }
     },
     head: {
@@ -29,13 +66,12 @@ export default function(endpoint) {
   if (endpoint) {
     Mixin = Object.assign(Mixin, {
       async asyncData({ $axios }) {
+        const tweetData = await getTweetData($axios, endpoint)
         return {
           endpoint,
-          tweetData: await getTweetData($axios, endpoint)
+          tweets: tweetData['hydra:member'],
+          beforeDateTime: tweetData['hydra:member'][0].createdAt
         }
-      },
-      async mounted() {
-        this.tweetData = await getTweetData(this.$axios, this.endpoint)
       }
     })
   }

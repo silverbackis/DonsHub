@@ -26,6 +26,21 @@ acl invalidators {
 }
 
 sub vcl_recv {
+  set req.http.Surrogate-Capability = "abc=ESI/1.0";
+
+  if (req.http.Cookie) {
+    set req.http.Cookie = ";" + req.http.Cookie;
+    set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
+    set req.http.Cookie = regsuball(req.http.Cookie, ";(PHPSESSID)=", "; \1=");
+    set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
+    set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
+
+    if (req.http.Cookie == "") {
+      // If there are no more cookies, remove the header to get page cached.
+      unset req.http.Cookie;
+    }
+  }
+
   if (req.restarts > 0) {
     set req.hash_always_miss = true;
   }
@@ -93,6 +108,11 @@ sub vcl_deliver {
 }
 
 sub vcl_backend_response {
+  if (beresp.http.Surrogate-Control ~ "ESI/1.0") {
+    unset beresp.http.Surrogate-Control;
+    set beresp.do_esi = true;
+  }
+
   # Ban lurker friendly header
   set beresp.http.url = bereq.url;
 

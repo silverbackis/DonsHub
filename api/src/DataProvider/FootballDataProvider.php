@@ -90,7 +90,7 @@ class FootballDataProvider
      */
     public function fetchUpcomingEvents(): array
     {
-        $fromDate = new DateTime();
+        $fromDate = new DateTime('');
         $toDate = (new DateTime())->modify('+6 months');
         $response = $this->request('get_events', [
             'from' => $fromDate->format(self::$dateFormat),

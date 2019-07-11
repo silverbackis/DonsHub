@@ -68,7 +68,9 @@ export default {
     }
     const {
       data: { matchLeagueTeams: teams }
-    } = await this.$axios.get(this.match.matchLeague)
+    } = await this.$axios.get(this.match.matchLeague, {
+      withCredentials: false
+    })
     const leagueTeams = {}
     teams.forEach(team => {
       leagueTeams[team['@id']] = team

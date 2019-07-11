@@ -26,7 +26,7 @@
             </app-link>
           </ul>
         </div>
-        <nuxt-child class="column" />
+        <nuxt-child :route-prefix="routePrefix" class="column" />
       </div>
     </div>
   </div>

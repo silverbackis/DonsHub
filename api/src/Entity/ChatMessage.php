@@ -42,14 +42,14 @@ class ChatMessage
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ChatUser", inversedBy="chatMessages")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Groups({"chat_message:read"})
      */
     private $chatUser;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Match", inversedBy="chatMessages")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Groups({"chat_message:read"})
      */
     private $match;

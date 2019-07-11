@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="source", type="string")
  * @ORM\DiscriminatorMap({ "club"="ClubTweet", "fan"="FanTweet" })
- * @ORM\Table(indexes={ @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="tweet_source", columns={"source"}), @ORM\Index(name="tweet_source_created_at", columns={"source", "created_at"}) })
+ * @ORM\Table(indexes={ @ORM\Index(name="created_at_index", columns={"created_at"}), @ORM\Index(name="tweet_source_index", columns={"source"}), @ORM\Index(name="tweet_source_created_at_index", columns={"source", "created_at"}) })
  * @ApiFilter(DateFilter::class, properties={"createdAt"})
  */
 abstract class Tweet

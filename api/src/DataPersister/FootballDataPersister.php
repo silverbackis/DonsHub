@@ -8,6 +8,7 @@ use App\Entity\MatchLeagueTeam;
 use App\Repository\MatchLeagueTeamRepository;
 use App\Repository\MatchRepository;
 use DateTime;
+use DateTimeZone;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -26,6 +27,7 @@ class FootballDataPersister
     private $teamRepository;
     private $serializer;
     private $apiTimeZone;
+    private $appTimeZone;
     public static $PIDFile = '/tmp/PID/UMM';
 
     public function __construct(
@@ -42,6 +44,8 @@ class FootballDataPersister
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer($classMetadataFactory, $metadataAwareNameConverter)];
         $this->serializer = new Serializer($normalizers, $encoders);
+        $this->apiTimeZone = new DateTimeZone('Europe/Berlin');
+        $this->appTimeZone = new DateTimeZone('UTC');
     }
 
     /**
@@ -53,6 +57,7 @@ class FootballDataPersister
     {
         foreach ($matchesArray as $matchData) {
             $matchDateTime = new DateTime($matchData['match_date'] . ' ' . $matchData['match_time'] . ':00', $this->apiTimeZone);
+            $matchDateTime->setTimezone($this->appTimeZone);
             $matchData['match_date_time'] = $matchDateTime;
 
             /** @var Match $match */

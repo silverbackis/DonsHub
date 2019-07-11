@@ -49,7 +49,9 @@ export default {
     }
   },
   async mounted() {
-    this.youtubeData = await this.$axios.$get('/youtube_videos')
+    this.youtubeData = await this.$axios.$get('/youtube_videos', {
+      withCredentials: false
+    })
   },
   methods: {
     videoSrc(id) {

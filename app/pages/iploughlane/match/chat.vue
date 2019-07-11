@@ -24,7 +24,7 @@
           </div>
           <div v-else>
             <p class="subtitle">
-              Write a message to start the conversation this match.
+              Enter a message to start the conversation in today's game.
             </p>
           </div>
         </section>

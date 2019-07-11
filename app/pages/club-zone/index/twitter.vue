@@ -1,36 +1,14 @@
 <template>
-  <div class="section">
-    <div class="container">
-      <div class="columns is-multiline is-centered">
-        <div
-          v-for="tweet in tweets"
-          :key="tweet.id_str"
-          class="column is-6 is-tweet"
-        >
-          <blockquote class="twitter-tweet tw-align-center">
-            <p>
-              {{ tweet.text }}
-            </p>
-            <a :href="twitterLink(tweet.id_str)">
-              {{ tweet.created_at }}
-            </a>
-          </blockquote>
-        </div>
-      </div>
-    </div>
-    <script
-      async
-      src="https://platform.twitter.com/widgets.js"
-      charset="utf-8"
-    ></script>
-  </div>
+  <tweets :tweets="tweets" />
 </template>
 
 <script>
 import TwitterMixin from '~/components/TwitterMixin'
+import Tweets from '~/components/Tweets'
 
 export default {
-  mixins: [TwitterMixin('/club_zone_tweets')]
+  components: { Tweets },
+  mixins: [TwitterMixin('/club_tweets')]
 }
 </script>
 

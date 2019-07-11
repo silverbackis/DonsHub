@@ -52,7 +52,9 @@ export default {
         )
       })
       .join('&')
-    const { data } = await this.$axios.get('/matches?' + qs)
+    const { data } = await this.$axios.get('/matches?' + qs, {
+      withCredentials: false
+    })
     const scoreEntities = {}
     data['hydra:member'].forEach(match => {
       scoreEntities[match['@id']] = match

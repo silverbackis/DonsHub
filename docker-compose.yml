@@ -88,6 +88,7 @@ services:
     volumes:
       - ./app:/usr/src/app:rw,cached
       - /usr/src/client/node_modules
+      - /Volumes/Samsung_T5/GitHub/_ComponentsWebApp/CWAModules/packages:/usr/src/app/node_modules/@cwamodules:ro,cached
     ports:
       - "80:3000"
 

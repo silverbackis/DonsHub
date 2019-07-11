@@ -398,6 +398,7 @@ class Match
         $this->setMatchHomeTeamScore($match->getMatchHomeTeamScore());
         $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
         $this->setMatchStatus($match->getMatchStatus());
+        $this->setMatchDateTime($match->getMatchDateTime());
         $thisDT = $this->getMatchDateTime();
         $compareDT = $match->getMatchDateTime();
         if ($thisDT != $compareDT) {

@@ -52,8 +52,12 @@ export default {
       withCredentials: false
     })
     this.tweets = data['hydra:member']
-    this.beforeDateTime = data['hydra:member'][0].createdAt
-    this.page = this.page + 1
+    if (this.tweets.length) {
+      this.beforeDateTime = data['hydra:member'][0].createdAt
+      this.page = this.page + 1
+    } else {
+      this.loadedEarliest = true
+    }
     this.mercureMount(['/club_tweets/{id}'])
     this.eventSource.onmessage = this.mercureMessage
   },
@@ -75,6 +79,7 @@ export default {
     mercureMessage({ data: json }) {
       const data = JSON.parse(json)
       this.tweets.unshift(data)
+      this.renderTwitter()
     }
   }
 }

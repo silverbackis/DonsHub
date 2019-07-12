@@ -2,14 +2,21 @@
   <div class="terraces">
     <boarding />
     <div class="crowd">
-      <div v-for="x in 9" :key="'terrace-' + x" class="terrace" />
-    </div>
-    <div class="coming-soon box">
-      <h1 class="title">Coming Soon</h1>
-      <p>
-        We are working on this feature so you will soon be able to see your
-        avatar in the terraces.
-      </p>
+      <div v-for="x in 9" :key="'terrace-' + x" class="terrace">
+        <div class="container terrace-middle">
+          <div
+            v-for="user in usersByRow[x]"
+            :key="user['@id']"
+            :style="{ left: user.terraceSeat * 5 + '%' }"
+            class="avatar"
+          >
+            <img
+              :src="'/avatars/' + avatars[user.avatar].image"
+              :alt="avatars[user.avatar].description"
+            />
+          </div>
+        </div>
+      </div>
     </div>
     <div class="attendance-bar has-background-primary has-text-white">
       <div class="container">Attendance: {{ users ? users.length : '--' }}</div>
@@ -18,7 +25,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Boarding from './Boarding'
+
 export default {
   components: {
     Boarding
@@ -31,8 +40,21 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      avatars: 'avatars'
+    }),
     usersData() {
-      return this.users.map(user => this.getEntity(user))
+      return this.users ? this.users.map(user => this.getEntity(user)) : []
+    },
+    usersByRow() {
+      const rows = {}
+      for (const user of this.usersData) {
+        if (!rows[user.terraceRow]) {
+          rows[user.terraceRow] = []
+        }
+        rows[user.terraceRow].push(user)
+      }
+      return rows
     }
   }
 }
@@ -43,27 +65,21 @@ export default {
 .terraces
   position: relative
   background: $grey
-  .boarding,
-  .crowd
-    opacity: .4
   +mobile
     border-top: 10px solid $gold
-  .coming-soon
-    text-align: center
-    position: absolute
-    top: 50%
-    left: 50%
-    transform: translate3d(-50%, -60%, 0)
-    padding: 2rem
-    background: rgba($white, .95)
-    max-width: 500px
-    width: 90%
+  .terrace-middle
+    max-width: 800px
+    position: relative
+    height: 100%
     +mobile
-      padding: 1.4rem
-      .title
-        font-size: 1.4rem
-      p
-        font-size: .9rem
+      max-width: 100%
+    .avatar
+      position: absolute
+      bottom: 0
+      width: 6%
+      min-width: 32px
+      > img
+        width: 100%
   .terrace
     position: relative
     background: #E3DDCD

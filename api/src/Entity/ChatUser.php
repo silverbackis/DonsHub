@@ -32,6 +32,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ChatUser implements UserInterface
 {
+    public const AVATARS = [
+        'femaleBluetop',
+        'maleGlasses',
+        'femaleHeadBand',
+        'maleBlond',
+        'maleStripes',
+        'femaleAfro',
+        'maleSmart',
+        'femalePonytail',
+        'femaleSleeves',
+        'maleBeard',
+        'maleScarf',
+        'maleBadge'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="string")
@@ -67,6 +82,7 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Please select an avatar")
+     * @Assert\Choice(choices=ChatUser::AVATARS, message="Choose a valid avatar.")
      * @Groups({"user:write", "user:read", "chat_message:read"})
      */
     private $avatar;
@@ -79,6 +95,7 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="integer", options={"default" : 0})
      * @Assert\Range(min="1", max="9", minMessage="You must be at least on the first terrace row", maxMessage="There are only 9 rows on the terrace")
+     * @Groups({"user:read", "chat_message:read"})
      * @var null|integer
      */
     private $terraceRow;
@@ -86,6 +103,7 @@ class ChatUser implements UserInterface
     /**
      * @ORM\Column(type="integer", options={"default" : 0})
      * @Assert\GreaterThan(value="0", message="The terrace seat must be at least 1")
+     * @Groups({"user:read", "chat_message:read"})
      * @var null|integer
      */
     private $terraceSeat;

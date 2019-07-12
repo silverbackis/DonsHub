@@ -52,6 +52,9 @@ export default function(endpoint) {
           this.loadedEarliest = true
         }
         this.loadingMore = false
+        this.renderTwitter()
+      },
+      renderTwitter() {
         this.$nextTick(() => {
           if (window.twttr) {
             window.twttr.widgets.load()

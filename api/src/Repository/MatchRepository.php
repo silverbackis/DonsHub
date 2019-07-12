@@ -33,7 +33,7 @@ class MatchRepository extends ServiceEntityRepository
             )
             ->andWhere('m.matchDateTime >= :min_date')
             ->setParameter('team_id', FootballDataProvider::$teamId)
-            ->setParameter('min_date', (new DateTime('2019-07-09'))->setTime(0, 0))
+            ->setParameter('min_date', (new DateTime('now'))->setTime(0, 0))
             ->orderBy('m.matchDateTime', 'ASC')
             ->setMaxResults(1)
             ->getQuery()

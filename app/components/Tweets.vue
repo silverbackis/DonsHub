@@ -2,6 +2,9 @@
   <div v-if="tweets" class="section">
     <div class="container">
       <div class="columns is-multiline">
+        <div v-if="!tweets.length" class="column is-12 has-text-centered">
+          <h2 class="subtitle">Sorry, we have not found any tweets.</h2>
+        </div>
         <div
           v-for="tweet in tweets"
           :key="tweet.idStr"

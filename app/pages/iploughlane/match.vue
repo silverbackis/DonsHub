@@ -84,10 +84,14 @@ export default {
     },
     mercureMessage({ data: json }) {
       const data = this.receiveEntityData({ data: json })
-      if (data['@context'] === '/contexts/ChatUser') {
-        if (this.users.indexOf(data['@id']) === -1) {
-          this.users.unshift(data['@id'])
-        }
+      const userIndex = this.users.indexOf(data['@id'])
+      if (Object.keys(data).length === 1 && userIndex !== -1) {
+        this.users.splice(userIndex, 1)
+      } else if (
+        data['@context'] === '/contexts/ChatUser' &&
+        userIndex === -1
+      ) {
+        this.users.unshift(data['@id'])
       }
     }
   },

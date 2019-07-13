@@ -33,7 +33,7 @@ class ChatUserFactory
      */
     private function getAllSeatPositions(array $allUsers): ArrayCollection
     {
-        $rows = 9;
+        $rows = 7;
         $minSeatNumber = 1;
         $maxSeatNumber = 14;
         $percentCapacityExtend = 0.85;

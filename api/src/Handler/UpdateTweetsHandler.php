@@ -71,7 +71,7 @@ class UpdateTweetsHandler implements MessageHandlerInterface
         try {
             // Still valid after processing?
             $this->validateMessage($message);
-            $message->setSleepSeconds(60);
+            $message->setSleepSeconds(15);
             $this->messageBus->dispatch($message);
         } catch (UpdateTweetsHandlerException $e) {
             // No longer a valid message, stop the loop

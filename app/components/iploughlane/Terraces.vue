@@ -2,12 +2,12 @@
   <div class="terraces">
     <boarding />
     <div class="crowd">
-      <div v-for="x in 9" :key="'terrace-' + x" class="terrace">
-        <div class="container terrace-middle">
+      <div v-for="x in 7" :key="'terrace-' + x" class="terrace">
+        <transition-group name="fan" tag="div" class="container terrace-middle">
           <div
             v-for="user in usersByRow[x]"
             :key="user['@id']"
-            :style="{ left: user.terraceSeat * 5 + '%' }"
+            :style="{ left: getLeftPosition(user) }"
             class="avatar"
           >
             <img
@@ -15,7 +15,7 @@
               :alt="avatars[user.avatar].description"
             />
           </div>
-        </div>
+        </transition-group>
       </div>
     </div>
     <div class="attendance-bar has-background-primary has-text-white">
@@ -56,6 +56,13 @@ export default {
       }
       return rows
     }
+  },
+  methods: {
+    getLeftPosition(user) {
+      const baseLeft = user.terraceSeat * 6
+      // const finalLeft = baseLeft + user.offsetLeftPercent
+      return baseLeft + '%'
+    }
   }
 }
 </script>
@@ -64,28 +71,30 @@ export default {
 @import "assets/sass/utilities"
 .terraces
   position: relative
-  background: $grey
-  +mobile
-    border-top: 10px solid $gold
+  background: transparent
+  padding-top: 50px
+  margin-top: -50px
+  overflow: auto
   .terrace-middle
-    max-width: 800px
+    width: 70vw
+    max-width: 600px
     position: relative
     height: 100%
     +mobile
-      max-width: 100%
+      width: 100vw
     .avatar
       position: absolute
       bottom: 0
-      width: 6%
+      width: 7%
       min-width: 32px
       > img
         width: 100%
   .terrace
     position: relative
     background: #E3DDCD
-    height: 30px
-    +mobile
-      height: 25px
+    height: 3vw
+    min-height: 25px
+    max-height: 35px
     &:before,
     &:after
       content: ''
@@ -102,4 +111,15 @@ export default {
   .attendance-bar
     padding: .5rem
     font-size: 1.2rem
+    z-index: 2
+    position: relative
+
+.fan-enter-active,
+.fan-leave-active
+  transition: opacity .3s, transform .3s
+
+.fan-enter,
+.fan-leave-to
+  opacity: 0
+  transform: translateY(50%)
 </style>

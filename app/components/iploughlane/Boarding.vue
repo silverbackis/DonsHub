@@ -1,9 +1,7 @@
 <template>
-  <ul
-    class="boarding columns is-mobile is-gapless is-centered is-hidden-touch is-marginless"
-  >
+  <ul class="boarding columns is-mobile is-gapless is-centered is-marginless">
     <li
-      v-for="x in 30"
+      v-for="x in 50"
       :key="'board' + x"
       class="column is-narrow has-background-grey-lighter"
     >
@@ -47,7 +45,7 @@ export default {
   width: 100%
   white-space: nowrap
   overflow: hidden
-  height: 70px
+  height: 50px
   .column
     height: 100%
     img

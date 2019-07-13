@@ -48,7 +48,7 @@ export default {
   mixins: [MercureMixin],
   data() {
     return {
-      users: null
+      users: []
     }
   },
   computed: {
@@ -67,18 +67,36 @@ export default {
     }
   },
   async mounted() {
-    const { data: users } = await this.$axios.get('/chat_users')
-    const userEntities = {}
-    users['hydra:member'].forEach(user => {
-      userEntities[user['@id']] = user
-    })
-    this.$bwstarter.setEntities(userEntities)
-    this.users = users['hydra:member'].map(user => user['@id'])
-
+    let page = 1
+    let data = await this.getUsers(page)
+    this.populateUsers(data['hydra:member'])
+    let hv = data['hydra:view']
+    while (hv && hv['@id'] !== hv['hydra:last']) {
+      page++
+      data = await this.getUsers(page)
+      this.populateUsers(data['hydra:member'])
+      hv = data['hydra:view']
+    }
     this.mercureMount(['/matches/{id}', '/chat_users/{id}'])
     this.eventSource.onmessage = this.mercureMessage
   },
   methods: {
+    populateUsers(users) {
+      const userEntities = {}
+      // const min = -1
+      // const max = 1
+      users.forEach(user => {
+        // const offsetLeftPercent =
+        //   (Math.random() * (max - min + 1) + 1).toFixed(1) / 1
+        userEntities[user['@id']] = user // Object.assign({ offsetLeftPercent }, user)
+      })
+      this.$bwstarter.setEntities(userEntities)
+      this.users.push(...users.map(user => user['@id']))
+    },
+    async getUsers(page) {
+      const { data } = await this.$axios.get('/chat_users?page=' + page)
+      return data
+    },
     getRoute(path) {
       return this.routePrefix + path
     },

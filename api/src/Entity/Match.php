@@ -395,6 +395,8 @@ class Match
 
     public function updateFromMatch(Match $match): self
     {
+        $this->setMatchHomeTeamName($match->getMatchHomeTeamName());
+        $this->setMatchAwayTeamName($match->getMatchAwayTeamName());
         $this->setMatchHomeTeamScore($match->getMatchHomeTeamScore());
         $this->setMatchAwayTeamScore($match->getMatchAwayTeamScore());
         $this->setMatchStatus($match->getMatchStatus());

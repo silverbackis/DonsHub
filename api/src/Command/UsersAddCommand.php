@@ -32,7 +32,6 @@ class UsersAddCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $totalUsers = (int)$input->getOption('users') ?: 10;
-        dump($totalUsers);
 
         $io->comment(sprintf('Creating %d users', $totalUsers));
 

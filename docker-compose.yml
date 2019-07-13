@@ -1,19 +1,13 @@
-version: '3.4'
-
-x-cache:
-  &cache
-  cache_from:
-    - quay.io/api-platform/php
-    - quay.io/api-platform/nginx
-    - quay.io/api-platform/varnish
+version: '3'
 
 services:
   php:
-    image: quay.io/api-platform/php
+    image: ${CONTAINER_REGISTRY_BASE}/php
     build:
       context: ./api
       target: api_platform_php
-      <<: *cache
+      cache_from:
+        - ${CONTAINER_REGISTRY_BASE}/php
     depends_on:
       - db
       - rabbitmq
@@ -24,11 +18,12 @@ services:
       # - ./api/var:/srv/api/var:rw
 
   api:
-    image: quay.io/api-platform/nginx
+    image: ${CONTAINER_REGISTRY_BASE}/nginx
     build:
       context: ./api
       target: api_platform_nginx
-      <<: *cache
+      cache_from:
+        - ${CONTAINER_REGISTRY_BASE}/nginx
     depends_on:
       - php
     # Comment out this volume in production
@@ -38,11 +33,12 @@ services:
       - "8080:80"
 
   cache-proxy:
-    image: quay.io/api-platform/varnish
+    image: ${CONTAINER_REGISTRY_BASE}/varnish
     build:
       context: ./api
       target: api_platform_varnish
-      <<: *cache
+      cache_from:
+        - ${CONTAINER_REGISTRY_BASE}/nginx
     depends_on:
       - api
     volumes:
@@ -94,7 +90,7 @@ services:
   admin:
     # Use a static website hosting service in production
     # See https://facebook.github.io/create-react-app/docs/deployment
-    image: quay.io/api-platform/admin
+    image: ${CONTAINER_REGISTRY_BASE}/admin
     build:
       context: ./admin
       cache_from:
@@ -129,6 +125,7 @@ services:
       - 15672:15672
 
   php-consume:
+    image: ${CONTAINER_REGISTRY_BASE}/php-consume
     build:
       context: ./api
       target: api_platform_php_consume

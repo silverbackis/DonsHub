@@ -25,7 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={
  *          "GET",
  *          "POST"={ "controller"=ChatUserPostAction::class }
- *     }
+ *     },
+ *     attributes={"pagination_items_per_page"=50}
  * )
  * @ORM\Entity(repositoryClass="App\Repository\ChatUserRepository")
  * @UniqueEntity("username", message="That nickname is already in use at the moment.")

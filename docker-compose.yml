@@ -1,4 +1,11 @@
-version: '3'
+version: '3.4'
+
+x-cache:
+  &cache
+  cache_from:
+    - ${CONTAINER_REGISTRY_BASE}/php
+    - ${CONTAINER_REGISTRY_BASE}/nginx
+    - ${CONTAINER_REGISTRY_BASE}/varnish
 
 services:
   php:
@@ -6,8 +13,7 @@ services:
     build:
       context: ./api
       target: api_platform_php
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/php
+      <<: *cache
     depends_on:
       - db
       - rabbitmq
@@ -22,8 +28,7 @@ services:
     build:
       context: ./api
       target: api_platform_nginx
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/nginx
+      <<: *cache
     depends_on:
       - php
     # Comment out this volume in production
@@ -37,8 +42,7 @@ services:
     build:
       context: ./api
       target: api_platform_varnish
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/nginx
+      <<: *cache
     depends_on:
       - api
     volumes:

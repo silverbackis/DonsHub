@@ -3,11 +3,6 @@ version: '3'
 services:
   php:
     image: ${CONTAINER_REGISTRY_BASE}/php
-    build:
-      context: ./api
-      target: api_platform_php
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/php
     depends_on:
       - db
       - rabbitmq
@@ -18,21 +13,11 @@ services:
 
   api:
     image: ${CONTAINER_REGISTRY_BASE}/nginx
-    build:
-      context: ./api
-      target: api_platform_nginx
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/nginx
     depends_on:
       - php
 
   cache-proxy:
     image: ${CONTAINER_REGISTRY_BASE}/varnish
-    build:
-      context: ./api
-      target: api_platform_varnish
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/varnish
     depends_on:
       - api
 
@@ -62,10 +47,6 @@ services:
 
   app:
     image: ${CONTAINER_REGISTRY_BASE}/app
-    build:
-      context: ./app
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/app
     env_file:
       - ./app/.env
     volumes:
@@ -76,10 +57,6 @@ services:
     # Use a static website hosting service in production
     # See https://facebook.github.io/create-react-app/docs/deployment
     image: ${CONTAINER_REGISTRY_BASE}/admin
-    build:
-      context: ./admin
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/admin
     volumes:
       - ./admin:/usr/src/admin:rw,cached
       - /usr/src/admin/node_modules
@@ -94,11 +71,6 @@ services:
 
   php-consume:
     image: ${CONTAINER_REGISTRY_BASE}/php-consume
-    build:
-      context: ./api
-      target: api_platform_php_consume
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/php-consume
     restart: on-failure
     depends_on:
       - db

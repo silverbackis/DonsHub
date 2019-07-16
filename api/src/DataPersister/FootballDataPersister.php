@@ -56,7 +56,7 @@ class FootballDataPersister
     public function persistMatchData($matchesArray): void
     {
         foreach ($matchesArray as $matchData) {
-            $matchDateTime = new DateTime($matchData['match_date'] . ' ' . $matchData['match_time'] . ':00', $this->apiTimeZone);
+            $matchDateTime = new DateTime($matchData['match_date'] . ' ' . ($matchData['match_time'] ?: '00:00') . ':00', $this->apiTimeZone);
             $matchDateTime->setTimezone($this->appTimeZone);
             $matchData['match_date_time'] = $matchDateTime;
 

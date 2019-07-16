@@ -1,4 +1,15 @@
-version: '3'
+version: '3.4'
+
+x-cache:
+  &cache
+  cache_from:
+    - ${CONTAINER_REGISTRY_BASE}/php
+    - ${CONTAINER_REGISTRY_BASE}/nginx
+    - ${CONTAINER_REGISTRY_BASE}/varnish
+    - ${CONTAINER_REGISTRY_BASE}/app
+    - ${CONTAINER_REGISTRY_BASE}/admin
+    - ${CONTAINER_REGISTRY_BASE}/rabbitmq
+    - ${CONTAINER_REGISTRY_BASE}/php-consume
 
 services:
   php:
@@ -6,8 +17,7 @@ services:
     build:
       context: ./api
       target: api_platform_php
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/php
+      <<: *cache
     depends_on:
       - db
       - rabbitmq
@@ -21,8 +31,7 @@ services:
     build:
       context: ./api
       target: api_platform_nginx
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/nginx
+      <<: *cache
     depends_on:
       - php
 
@@ -31,8 +40,7 @@ services:
     build:
       context: ./api
       target: api_platform_varnish
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/varnish
+      <<: *cache
     depends_on:
       - api
 
@@ -64,8 +72,7 @@ services:
     image: ${CONTAINER_REGISTRY_BASE}/app
     build:
       context: ./app
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/app
+      <<: *cache
     env_file:
       - ./app/.env
     volumes:
@@ -78,8 +85,7 @@ services:
     image: ${CONTAINER_REGISTRY_BASE}/admin
     build:
       context: ./admin
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/admin
+      <<: *cache
     volumes:
       - ./admin:/usr/src/admin:rw,cached
       - /usr/src/admin/node_modules
@@ -88,6 +94,7 @@ services:
     image: ${CONTAINER_REGISTRY_BASE}/rabbitmq
     build:
       context: ./rabbitmq
+      <<: *cache
     volumes:
       - rabbitmq:/var/lib/rabbitmq:cached
 
@@ -96,8 +103,7 @@ services:
     build:
       context: ./api
       target: api_platform_php_consume
-      cache_from:
-        - ${CONTAINER_REGISTRY_BASE}/php-consume
+      <<: *cache
     restart: on-failure
     depends_on:
       - db

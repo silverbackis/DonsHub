@@ -1,0 +1,61 @@
+version: '3.4'
+
+services:
+    php:
+        volumes:
+            - ./api:/srv/api:rw,cached
+
+    api:
+        volumes:
+            - ./api/public:/srv/api/public:ro
+        ports:
+            - "8080:80"
+
+    cache-proxy:
+        volumes:
+            - ./api/docker/varnish/conf:/usr/local/etc/varnish:ro
+        tmpfs:
+            - /usr/local/var/varnish:exec
+        ports:
+            - "8081:80"
+
+    db:
+        ports:
+            - "5432:5432"
+
+    mercure:
+        ports:
+            - "1337:80"
+
+    app:
+        ports:
+            - "80:3000"
+
+    admin:
+        ports:
+            - "81:3000"
+
+    rabbitmq:
+        ports:
+            - 15672:15672
+
+    php-consume:
+        volumes:
+            - ./api:/srv/api:rw,cached
+            # If you develop on Linux, uncomment the following line to use a bind-mounted host directory instead
+            # - ./api/var:/srv/api/var:rw
+
+    h2-proxy:
+        # Don't use this proxy in prod
+        build:
+            context: ./h2-proxy
+        depends_on:
+            - app
+            - admin
+            - api
+            - cache-proxy
+        ports:
+            - "443:443"
+            - "444:444"
+            - "8443:8443"
+            - "8444:8444"

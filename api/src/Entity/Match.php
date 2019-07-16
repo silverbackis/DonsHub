@@ -250,9 +250,9 @@ class Match
         return $this->matchHomeTeamId;
     }
 
-    public function setMatchHomeTeamId(int $matchHomeTeamId): self
+    public function setMatchHomeTeamId($matchHomeTeamId): self
     {
-        $this->matchHomeTeamId = $matchHomeTeamId;
+        $this->matchHomeTeamId = (int) $matchHomeTeamId;
 
         return $this;
     }
@@ -274,9 +274,9 @@ class Match
         return $this->matchAwayTeamId;
     }
 
-    public function setMatchAwayTeamId(int $matchAwayTeamId): self
+    public function setMatchAwayTeamId($matchAwayTeamId): self
     {
-        $this->matchAwayTeamId = $matchAwayTeamId;
+        $this->matchAwayTeamId = (int) $matchAwayTeamId;
 
         return $this;
     }

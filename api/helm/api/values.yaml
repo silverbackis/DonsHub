@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 php:
-  repository: quay.io/api-platform/php
+  repository: r.cfcr.io/silverbackdan/dons-hub/php
   tag: latest
   pullPolicy: Always
   replicaCount: 1
@@ -12,23 +12,23 @@ php:
   env: prod
   debug: '0'
   secret: ""
-  corsAllowOrigin: "^https?://.*?\\.example\\.com$"
-  trustedHosts: "^.*\\.example\\.com$"
+  corsAllowOrigin: "^https?://.*?\\.donshub\\.com$"
+  trustedHosts: "^.*\\.donshub\\.com$"
   trustedProxies:
     - 10.0.0.0/8
     - 172.16.0.0/12
     - 192.168.0.0/16
 
 nginx:
-  repository: quay.io/api-platform/nginx
+  repository: r.cfcr.io/silverbackdan/dons-hub/nginx
   tag: latest
   pullPolicy: Always
   replicaCount: 1
 
 varnish:
   enabled: true
-  #url: https://example.com
-  repository: quay.io/api-platform/varnish
+  url: https://api.donshub.com
+  repository: r.cfcr.io/silverbackdan/dons-hub/varnish
   tag: latest
   pullPolicy: Always
   replicaCount: 1
@@ -44,7 +44,7 @@ postgresql:
   # Persistent Volume Storage configuration.
   # ref: https://kubernetes.io/docs/user-guide/persistent-volumes
   persistence:
-    enabled: false
+    enabled: true
   pullPolicy: IfNotPresent
 #  image:
 #    repository: postgres
@@ -53,9 +53,9 @@ postgresql:
 mercure:
   enabled: true
   publishUrl: http://mercure/hub
-  subscribeUrl: https://mercure.example.com/hub
+  subscribeUrl: https://mercure.donshub.com/hub
   allowAnonymous: "1"
-  corsAllowedOrigins: "^https?://.*?\\.example\\.com$"
+  corsAllowedOrigins: "^https?://.*?\\.donshub\\.com$"
   acmeHosts: "" # TODO: Fix the Mercure chart
   service:
     type: NodePort
@@ -64,16 +64,16 @@ mercure:
 ingress:
   annotations:
     # kubernetes.io/ingress.global-static-ip-name: chart-ip
-    # kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   tls:
     # Secrets must be manually created in the namespace, you can also use cert-manager.
-    # - hosts:
-      # - example.com
-      # - mercure.example.com
+    - hosts:
+      - api.donshub.com
+      - mercure.donshub.com
   hosts:
     api:
-      host: example.com
+      host: api.donshub.com
       serviceName: varnish
     mercure:
       host: mercure.example.com
@@ -84,9 +84,9 @@ resources: {}
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

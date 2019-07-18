@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 php:
-  repository: r.cfcr.io/silverbackdan/dons-hub/php
+  repository: gcr.io/silverback-web-apps/dons-hub/php
   tag: latest
   pullPolicy: Always
   replicaCount: 1
@@ -20,7 +20,7 @@ php:
     - 192.168.0.0/16
 
 nginx:
-  repository: r.cfcr.io/silverbackdan/dons-hub/nginx
+  repository: gcr.io/silverback-web-apps/dons-hub/nginx
   tag: latest
   pullPolicy: Always
   replicaCount: 1
@@ -28,7 +28,7 @@ nginx:
 varnish:
   enabled: true
   url: https://api.donshub.com
-  repository: r.cfcr.io/silverbackdan/dons-hub/varnish
+  repository: gcr.io/silverback-web-apps/dons-hub/varnish
   tag: latest
   pullPolicy: Always
   replicaCount: 1
@@ -44,7 +44,7 @@ postgresql:
   # Persistent Volume Storage configuration.
   # ref: https://kubernetes.io/docs/user-guide/persistent-volumes
   persistence:
-    enabled: true
+    enabled: false
   pullPolicy: IfNotPresent
 #  image:
 #    repository: postgres
@@ -66,17 +66,17 @@ ingress:
     # kubernetes.io/ingress.global-static-ip-name: chart-ip
     kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
-  tls:
-    # Secrets must be manually created in the namespace, you can also use cert-manager.
-    - hosts:
-      - api.donshub.com
-      - mercure.donshub.com
+#  tls:
+#    # Secrets must be manually created in the namespace, you can also use cert-manager.
+#    - hosts:
+#      - api.donshub.com
+#      - mercure.donshub.com
   hosts:
     api:
       host: api.donshub.com
       serviceName: varnish
     mercure:
-      host: mercure.example.com
+      host: mercure.donshub.com
       serviceName: mercure
 
 resources:

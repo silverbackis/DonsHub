@@ -28,8 +28,8 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: /*
+          - path: /
             backend:
-              serviceName: {{ .serviceName }}
+              serviceName: {{ include "name" . }}-{{ .serviceName }}
               servicePort: {{ .servicePort | default 80 }}
   {{- end }}

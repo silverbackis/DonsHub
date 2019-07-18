@@ -30,6 +30,6 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ include "name" . }}-{{ .serviceName }}
+              serviceName: {{ $.Chart.Name }}-{{ .serviceName }}
               servicePort: {{ .servicePort | default 80 }}
   {{- end }}

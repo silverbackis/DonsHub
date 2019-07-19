@@ -17,7 +17,7 @@ data:
   trusted-proxies: {{ join "," .Values.php.trustedProxies }}
   mercure-publish-url: {{ .Values.mercure.publishUrl | quote }}
   mercure-subscribe-url: {{ .Values.mercure.subscribeUrl | quote }}
-  messenger-transport: amqp://{{ .Values.rabbitmq.rabbitmq.username | quote }}:{{ .Values.rabbitmq.rabbitmq.password | quote }}@rabbitmq:5672/%2f/message
+  messenger-transport: {{ .Values.php.messengerTransport | quote }}
   jwt-secret: {{ .Values.php.jwt.secretKey | quote }}
   jwt-public: {{ .Values.php.jwt.publicKey | quote }}
   jwt-pass: {{ .Values.php.jwt.passphrase | quote }}

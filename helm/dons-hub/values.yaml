@@ -1,6 +1,11 @@
 # Default values for api.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+phpConsume:
+  repository: gcr.io/silverback-web-apps/dons-hub/php-consume
+  tag: latest
+  pullPolicy: Always
+  replicaCount: 1
 
 php:
   repository: gcr.io/silverback-web-apps/dons-hub/php
@@ -36,6 +41,7 @@ php:
     apiKey: ~
     clientId: ~
     clietnSecret: ~
+  messengerTransport: amqp://guest:guest@rabbitmq:5672/%2f/message
 
 nginx:
   repository: gcr.io/silverback-web-apps/dons-hub/nginx

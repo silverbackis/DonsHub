@@ -18,6 +18,24 @@ php:
     - 10.0.0.0/8
     - 172.16.0.0/12
     - 192.168.0.0/16
+  jwt:
+    secretKey: ~
+    publicKey: ~
+    passphrase: ~
+  footballApiKey: ~
+  twitter:
+    consumerKey: ~
+    consumerSecret: ~
+    accessToken: ~
+    accessTokenSecret: ~
+  facebook:
+    appId: ~
+    appSecret: ~
+    accessToken: ~
+  google:
+    apiKey: ~
+    clientId: ~
+    clietnSecret: ~
 
 nginx:
   repository: gcr.io/silverback-web-apps/dons-hub/nginx
@@ -60,6 +78,13 @@ mercure:
   service:
     type: NodePort
     port: 80
+
+rabbitmq:
+  persistence:
+    enabled: false
+  rabbitmq:
+    username: guest
+    password: guest
 
 ingress:
   annotations:

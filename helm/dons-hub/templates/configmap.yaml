@@ -12,8 +12,23 @@ data:
   env: {{ .Values.php.env | quote }}
   debug: {{ .Values.php.debug | quote }}
   cors-allow-origin: {{ .Values.php.corsAllowOrigin | quote }}
-  varnish-url: {{ if .Values.varnish.enabled }}http://varnish{{ else }}{{ .Values.varnish.url | quote }}{{ end }}
+  varnish-url: {{ if .Values.varnish.enabled }}http://{{ include "name" . }}-varnish{{ else }}{{ .Values.varnish.url | quote }}{{ end }}
   trusted-hosts: {{ .Values.php.trustedHosts | quote }}
   trusted-proxies: {{ join "," .Values.php.trustedProxies }}
   mercure-publish-url: {{ .Values.mercure.publishUrl | quote }}
   mercure-subscribe-url: {{ .Values.mercure.subscribeUrl | quote }}
+  messenger-transport: amqp://{{ .Values.rabbitmq.rabbitmq.username | quote }}:{{ .Values.rabbitmq.rabbitmq.password | quote }}@rabbitmq:5672/%2f/message
+  jwt-secret: {{ .Values.php.jwt.secretKey | quote }}
+  jwt-public: {{ .Values.php.jwt.publicKey | quote }}
+  jwt-pass: {{ .Values.php.jwt.passphrase | quote }}
+  football-api: {{ .Values.php.footballApiKey | quote }}
+  twitter-consumer-key: {{ .Values.php.twitter.consumerKey | quote }}
+  twitter-consumer-secret: {{ .Values.php.twitter.consumerSecret | quote }}
+  twitter-access-token: {{ .Values.php.twitter.accessToken | quote }}
+  twitter-access-token-secret: {{ .Values.php.twitter.accessTokenSecret | quote }}
+  facebook-app-id: {{ .Values.php.facebook.appId | quote }}
+  facebook-app-secret: {{ .Values.php.facebook.appSecret | quote }}
+  facebook-access-token: {{ .Values.php.facebook.accessToken | quote }}
+  google-api-key: {{ .Values.php.google.apiKey | quote }}
+  google-client-id: {{ .Values.php.google.clientId | quote }}
+  google-client-secret: {{ .Values.php.google.clientSecret | quote }}

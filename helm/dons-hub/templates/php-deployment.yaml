@@ -81,6 +81,81 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}
                   key: mercure-jwt-secret
+            - name: MESSENGER_TRANSPORT_DSN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: messenger-transport
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jwt-secret
+            - name: JWT_PUBLIC_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jwt-public
+            - name: JWT_PASSPHRASE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jwt-pass
+            - name: FOOTBALL_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: football-api
+            - name: TWITTER_CONSUMER_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: twitter-consumer-key
+            - name: TWITTER_CONSUMER_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: twitter-consumer-secret
+            - name: TWITTER_ACCESS_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: twitter-access-token
+            - name: TWITTER_ACCESS_TOKEN_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: twitter-access-token-secret
+            - name: FACEBOOK_APP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: facebook-app-id
+            - name: FACEBOOK_APP_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: facebook-app-secret
+            - name: FACEBOOK_ACCESS_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: facebook-access-token
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: google-api-key
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: google-client-id
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: google-client-secret
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}

@@ -103,6 +103,9 @@ services:
       <<: *cache
     volumes:
       - rabbitmq:/var/lib/rabbitmq:cached
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
   php-consume:
     image: ${CONTAINER_REGISTRY_BASE}/php-consume

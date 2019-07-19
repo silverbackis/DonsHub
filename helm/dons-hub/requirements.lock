@@ -4,6 +4,9 @@ dependencies:
   version: 3.9.5
 - name: mercure
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.0.0
-digest: sha256:6466d376987cc08b70fe36945dd93474836aab05edc155955951bcb0774a0896
-generated: 2019-03-26T18:14:32.4074+01:00
+  version: 1.0.7
+- name: rabbitmq
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 6.2.2
+digest: sha256:b46603fcd8424c05fdc07d1ef8e69fd36cca1d6a59cdc139be503e134ca19063
+generated: "2019-07-19T21:13:35.514129+01:00"

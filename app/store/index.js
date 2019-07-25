@@ -2,6 +2,7 @@ import moment from 'moment-timezone'
 
 export default {
   state: () => ({
+    isDev: false,
     baseUrl: null,
     mercureHub: null,
     currentMatch: null,
@@ -79,7 +80,7 @@ export default {
         .format('Do MMM Y @ HH:mm')
     },
     gatesOpen(state, getters) {
-      return moment.utc().diff(getters.gatesDateTime) > 0
+      return state.isDev ? true : moment.utc().diff(getters.gatesDateTime) > 0
     },
     currentMatch(state, getters, rootState, rootGetters) {
       return rootGetters['bwstarter/_entities/getEntity'](state.currentMatch)
@@ -100,12 +101,16 @@ export default {
     },
     setToken(state, token) {
       state.token = token
+    },
+    setIsDev(state, isDev) {
+      state.isDev = isDev
     }
   },
   actions: {
-    async nuxtServerInit({ commit }, { env, $axios, req }) {
+    async nuxtServerInit({ commit }, { env, $axios, req, isDev }) {
       commit('setSessionId', req.sessionID)
       commit('setBaseUrl', env.baseUrl)
+      commit('setIsDev', isDev)
       try {
         const { data: currentMatch, headers } = await $axios.get(
           '/matches/current'

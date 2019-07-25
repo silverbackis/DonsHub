@@ -26,6 +26,7 @@ services:
     App\DataProvider\FootballDataProvider:
         arguments:
             $apiKey: '%env(FOOTBALL_API_KEY)%'
+            $apiSecret: '%env(FOOTBALL_API_SECRET)%'
 
     Abraham\TwitterOAuth\TwitterOAuth:
         arguments:

@@ -172,7 +172,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY docker/php/conf.d/api-platform.ini $PHP_INI_DIR/conf.d/api-platform.ini
 
-COPY --from=api_platform_php /srv/api/ /
+COPY --from=api_platform_php /srv/api/ /srv/api
+COPY --from=api_platform_php /tmp/PID/ /tmp/PID
 
 WORKDIR /srv/api
 

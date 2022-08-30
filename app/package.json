@@ -32,7 +32,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.25",
+    "moment-timezone": "^0.5.35",
     "nuxt": "^2.8.0",
     "pg": "^7.11.0",
     "sequelize": "^5.9.4"
